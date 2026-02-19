@@ -8,6 +8,8 @@ import type { SetURLSearchParams } from "react-router"
 import { authClient } from "../../lib/authClient"
 import { userSignUpSchema } from "../../validations/userSchema"
 import z from "zod"
+import { showToast } from "../showToast"
+import { getErrorMessage } from "../../lib/errorCodes"
 
 interface RegisterFormProps {
   rol: string
@@ -47,7 +49,6 @@ export default function RegisterForm({
 
     if (!validation.success) {
       const cause = z.treeifyError(validation.error)
-      console.log(cause.properties)
 
       return setErrors({
         ...INITIALERRORS,
@@ -58,16 +59,24 @@ export default function RegisterForm({
       })
     }
 
-    const { data, error } = await authClient.signUp.email({
-      email: formValues.email,
-      password: formValues.password,
-      name: formValues.name,
-    })
+    try {
+      const { data, error } = await authClient.signUp.email({
+        email: formValues.email,
+        password: formValues.password,
+        name: formValues.name,
+      })
 
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(data)
+      if (error) {
+        console.log(error) // DEBUG
+        showToast("error", getErrorMessage(error.code))
+        return
+      }
+
+      showToast("success", "Cuenta Creada Correctamente")
+      console.log(data) // DEBUG
+    } catch (err) {
+      console.error(err)
+      showToast("error", "Error creando la cuenta, Por favor Intenta de nuevo.")
     }
   }
 

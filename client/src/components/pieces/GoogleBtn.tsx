@@ -1,8 +1,31 @@
+import { authClient } from "../../lib/authClient"
+import { getErrorMessage } from "../../lib/errorCodes"
 import Button from "../Button"
+import { showToast } from "../showToast"
 
 export default function GoogleBtn() {
+  const googleSignIn = async () => {
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "http://localhost:5173/", // TODO: use .env instead
+      })
+
+      if (error) {
+        console.log(error) // DEBUG
+        showToast("error", getErrorMessage(error.code))
+        return
+      }
+    } catch (err) {
+      showToast("error", "Hubo un error iniciando Sesión con Google.")
+      console.log(err)
+    }
+  }
+
   return (
     <Button
+      type="button"
+      onClick={googleSignIn}
       className="
         w-full
         flex items-center justify-center gap-3

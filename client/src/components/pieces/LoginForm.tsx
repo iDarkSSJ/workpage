@@ -6,6 +6,8 @@ import Separator from "../ui/Separator"
 import GoogleBtn from "./GoogleBtn"
 import { userLoginSchema } from "../../validations/userSchema"
 import { z } from "zod"
+import { showToast } from "../showToast"
+import { getErrorMessage } from "../../lib/errorCodes"
 
 const DEFAULTFORMVALUES = {
   email: "",
@@ -36,15 +38,23 @@ export default function LoginForm() {
       })
     }
 
-    const { data, error } = await authClient.signIn.email({
-      email: formValues.email,
-      password: formValues.password,
-    })
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: formValues.email,
+        password: formValues.password,
+      })
 
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(data)
+      if (error) {
+        console.log(error) // DEBUG
+        showToast("error", getErrorMessage(error.code))
+        return
+      }
+
+      showToast("success", "Cuenta Creada Correctamente")
+      console.log(data) // DEBUG
+    } catch (err) {
+      console.error(err)
+      showToast("error", "Error creando la cuenta, Por favor Intenta de nuevo.")
     }
   }
 
