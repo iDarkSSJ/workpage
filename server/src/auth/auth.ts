@@ -10,10 +10,13 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8, // Default
+    maxPasswordLength: 32, // Custom Limit - Jose Luis
   },
   user: {
     deleteUser: {
       enabled: true,
     },
   },
+  trustedOrigins: ["http://localhost:5173"], // TODO: USE .ENV INSTEAD
 })

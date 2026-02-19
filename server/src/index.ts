@@ -6,11 +6,16 @@ import cors from "cors"
 const app = express()
 const port = 3000
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // TODO: USE .ENV INSTEAD
+    credentials: true,
+  }),
+)
 // BETTER AUTH HANDLER - `https://www.better-auth.com/docs/integrations/express#mount-the-handler`
 // IT HAVE TO BE BEFORE THE JSON MIDDLEWARE - (jose)
 app.all("/api/auth/*splat", toNodeHandler(auth))
 
-app.use(cors())
 app.use(express.json())
 
 app.listen(port, () => {

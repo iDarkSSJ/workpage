@@ -2,7 +2,7 @@ import { cn } from "../../utils/cn"
 
 interface RadioProps {
   checked: boolean
-  onChange: (value: string) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
   name: string
   value: string
@@ -10,7 +10,7 @@ interface RadioProps {
 }
 
 export default function Radio({
-  checked,
+  checked = false,
   onChange,
   disabled = false,
   name,
@@ -28,7 +28,7 @@ export default function Radio({
         name={name}
         value={value}
         checked={checked}
-        onChange={() => onChange(value)}
+        onChange={onChange}
         disabled={disabled}
         className="peer h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-gray-600 bg-neutral-900 transition-all checked:border-primary"
       />

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { cn } from "../../utils/cn"
 
-interface TextAreaProps {
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string
   label: string
   min?: number
