@@ -1,9 +1,11 @@
 import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react"
 import { cn } from "../utils/cn"
+import toast, { type Toast } from "react-hot-toast"
 
 export type ToastType = "error" | "success" | "warning" | "info"
 
 interface ToastProps {
+  t: Toast
   toastType: ToastType
   description: string
 }
@@ -35,11 +37,12 @@ const PROPERTIES = {
   },
 }
 
-export default function Toast({ toastType, description }: ToastProps) {
+export default function Toast({ t, toastType, description }: ToastProps) {
   const { text, ring, message, icon } = PROPERTIES[toastType]
 
   return (
     <div
+      onClick={() => toast.dismiss(t.id)}
       className={cn(
         "bg-primary-bg ring-1 rounded-xl px-4 py-3 shadow-md flex gap-3 items-start animate-slideInRight",
         ring,
@@ -54,4 +57,3 @@ export default function Toast({ toastType, description }: ToastProps) {
     </div>
   )
 }
-

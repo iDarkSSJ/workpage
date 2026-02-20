@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { authClient } from "../../lib/authClient"
 import Button from "../Button"
 import Input from "../ui/Input"
 import Separator from "../ui/Separator"
@@ -7,21 +6,24 @@ import GoogleBtn from "./GoogleBtn"
 import { userLoginSchema } from "../../validations/userSchema"
 import { z } from "zod"
 import { showToast } from "../showToast"
-import { getErrorMessage } from "../../lib/errorCodes"
+import { signInReq } from "../../lib/authRequest"
 
-const DEFAULTFORMVALUES = {
+type FormValuesT = z.infer<typeof userLoginSchema>
+type FormErrorsT = Record<keyof FormValuesT, string>
+
+const DEFAULTFORMVALUES: z.infer<typeof userLoginSchema> = {
   email: "",
   password: "",
 }
 
-const INITIALERRORS = {
+const INITIALERRORS: Record<keyof typeof DEFAULTFORMVALUES, string> = {
   email: "",
   password: "",
 }
 
 export default function LoginForm() {
-  const [formValues, setFormValues] = useState(DEFAULTFORMVALUES)
-  const [errors, setErrors] = useState(INITIALERRORS)
+  const [formValues, setFormValues] = useState<FormValuesT>(DEFAULTFORMVALUES)
+  const [errors, setErrors] = useState<FormErrorsT>(INITIALERRORS)
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -38,24 +40,14 @@ export default function LoginForm() {
       })
     }
 
-    try {
-      const { data, error } = await authClient.signIn.email({
-        email: formValues.email,
-        password: formValues.password,
-      })
+    const { success, error } = await signInReq(formValues)
 
-      if (error) {
-        console.log(error) // DEBUG
-        showToast("error", getErrorMessage(error.code))
-        return
-      }
-
-      showToast("success", "Cuenta Creada Correctamente")
-      console.log(data) // DEBUG
-    } catch (err) {
-      console.error(err)
-      showToast("error", "Error creando la cuenta, Por favor Intenta de nuevo.")
+    if (!success) {
+      showToast("error", error ?? "Ocurrió un error inesperado.")
+      return
     }
+
+    showToast("success", "Sesión iniciada correctamente.")
   }
 
   const onChangeField =

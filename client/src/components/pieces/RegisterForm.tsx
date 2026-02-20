@@ -5,27 +5,28 @@ import Button from "../Button"
 import Separator from "../ui/Separator"
 import GoogleBtn from "./GoogleBtn"
 import type { SetURLSearchParams } from "react-router"
-import { authClient } from "../../lib/authClient"
 import { userSignUpSchema } from "../../validations/userSchema"
 import z from "zod"
 import { showToast } from "../showToast"
-import { getErrorMessage } from "../../lib/errorCodes"
+import { signUpReq } from "../../lib/authRequest"
 
 interface RegisterFormProps {
-  rol: string
+  rol: UserType
   setSearchParams: SetURLSearchParams
 }
 
+type FormValuesT = z.infer<typeof userSignUpSchema>
+type FormErrorsT = Record<keyof FormValuesT, string>
 type UserType = "contractor" | "freelance"
 
-const DEFAULTFORMVALUES = {
+const DEFAULTFORMVALUES: z.infer<typeof userSignUpSchema> = {
   userType: "" as UserType,
   name: "",
   email: "",
   password: "",
 }
 
-const INITIALERRORS = {
+const INITIALERRORS: Record<keyof typeof DEFAULTFORMVALUES, string> = {
   userType: "",
   name: "",
   email: "",
@@ -36,11 +37,11 @@ export default function RegisterForm({
   rol,
   setSearchParams,
 }: RegisterFormProps) {
-  const [formValues, setFormValues] = useState({
+  const [formValues, setFormValues] = useState<FormValuesT>({
     ...DEFAULTFORMVALUES,
     userType: rol,
   })
-  const [errors, setErrors] = useState(INITIALERRORS)
+  const [errors, setErrors] = useState<FormErrorsT>(INITIALERRORS)
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -59,25 +60,14 @@ export default function RegisterForm({
       })
     }
 
-    try {
-      const { data, error } = await authClient.signUp.email({
-        email: formValues.email,
-        password: formValues.password,
-        name: formValues.name,
-      })
+    const { success, error } = await signUpReq(formValues)
 
-      if (error) {
-        console.log(error) // DEBUG
-        showToast("error", getErrorMessage(error.code))
-        return
-      }
-
-      showToast("success", "Cuenta Creada Correctamente")
-      console.log(data) // DEBUG
-    } catch (err) {
-      console.error(err)
-      showToast("error", "Error creando la cuenta, Por favor Intenta de nuevo.")
+    if (!success) {
+      showToast("error", error ?? "Ocurrió un error inesperado.")
+      return
     }
+
+    showToast("success", "Sesión iniciada correctamente.")
   }
 
   const onChangeField =

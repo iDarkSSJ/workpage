@@ -36,7 +36,7 @@ export default function GoogleBtn() {
         hover:border-primary
       ">
       <GoogleIcon />
-      Continuar con Google
+      Google
     </Button>
   )
 }

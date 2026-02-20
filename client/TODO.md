@@ -1,6 +1,6 @@
-- Reset Password
-- Change Password
-- Update User Info
+- Reset Password 
+- Change Password ☑️
+- Update User Info 
 - Manually linking google Account
 - Delete Account
 

@@ -24,22 +24,24 @@ const passwordRegex =
 
 const nameRegex = /^(?=.{1,50}$)[\p{L}]+(?:\s[\p{L}]+)*$/u
 
+const passwordSchema = z
+  .string()
+  .min(8, "La contraseña debe tener al menos 8 caracteres")
+  .max(32, "La contraseña no puede tener más de 32 caracteres")
+  .regex(/[A-ZÑ]/, "Debe contener al menos una letra mayúscula (A-Z o Ñ)")
+  .regex(/[a-zñ]/, "Debe contener al menos una letra minúscula (a-z o ñ)")
+  .regex(/[0-9]/, "Debe contener al menos un número (0-9)")
+  .regex(
+    /[#?!@$%^&*+-]/,
+    "Debe contener al menos un carácter especial (# ? ! @ $ % ^ & * -)",
+  )
+  .regex(/^\S*$/, "No se permiten espacios")
+  // Validación global: solo permite los caracteres del set completo
+  .regex(passwordRegex, "La contraseña contiene un carácter inválido")
+
 export const userLoginSchema = z.object({
   email: z.email("No es un Email valido."),
-  password: z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .max(32, "La contraseña no puede tener más de 32 caracteres")
-    .regex(/[A-ZÑ]/, "Debe contener al menos una letra mayúscula (A-Z o Ñ)")
-    .regex(/[a-zñ]/, "Debe contener al menos una letra minúscula (a-z o ñ)")
-    .regex(/[0-9]/, "Debe contener al menos un número (0-9)")
-    .regex(
-      /[#?!@$%^&*+-]/,
-      "Debe contener al menos un carácter especial (# ? ! @ $ % ^ & * -)",
-    )
-    .regex(/^\S*$/, "No se permiten espacios")
-    // Validación global: solo permite los caracteres del set completo
-    .regex(passwordRegex, "La contraseña contiene un carácter inválido"),
+  password: passwordSchema,
 })
 
 export const userSignUpSchema = z.object({
@@ -53,20 +55,16 @@ export const userSignUpSchema = z.object({
     .regex(/^(?!.*\s{2})/, "No se permiten espacios dobles.")
     // Validación global: solo permite letras Unicode y espacios simples
     .regex(nameRegex, "El nombre contiene caracteres inválidos."),
-  userType: z.enum(["contractor", "freelance"], "Opción no válida, debe ser Contratante o Freelance."),
+  userType: z.enum(
+    ["contractor", "freelance"],
+    "Opción no válida, debe ser Contratante o Freelance.",
+  ),
   email: z.email("No es un Email valido."),
-  password: z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .max(32, "La contraseña no puede tener más de 32 caracteres")
-    .regex(/[A-ZÑ]/, "Debe contener al menos una letra mayúscula (A-Z o Ñ)")
-    .regex(/[a-zñ]/, "Debe contener al menos una letra minúscula (a-z o ñ)")
-    .regex(/[0-9]/, "Debe contener al menos un número (0-9)")
-    .regex(
-      /[#?!@$%^&*+-]/,
-      "Debe contener al menos un carácter especial (# ? ! @ $ % ^ & * -)",
-    )
-    .regex(/^\S*$/, "No se permiten espacios")
-    // Validación global: solo permite los caracteres del set completo.
-    .regex(passwordRegex, "La contraseña contiene un carácter inválido"),
+  password: passwordSchema,
+})
+
+export const changePasswordSchema = z.object({
+  newPassword: passwordSchema,
+  currentPassword: passwordSchema,
+  revokeOtherSessions: z.boolean().optional(),
 })
