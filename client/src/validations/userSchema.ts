@@ -39,6 +39,16 @@ const passwordSchema = z
   // Validación global: solo permite los caracteres del set completo
   .regex(passwordRegex, "La contraseña contiene un carácter inválido")
 
+export const resetPasswordSchema = z
+  .object({
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden.",
+    path: ["confirmPassword"],
+  })
+
 export const userLoginSchema = z.object({
   email: z.email("No es un Email valido."),
   password: passwordSchema,

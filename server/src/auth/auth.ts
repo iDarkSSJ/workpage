@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db } from "../database/database"
 import * as authSchema from "../database/auth-schema"
+import { sendEmail } from "../email"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,6 +13,8 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8, // Default
     maxPasswordLength: 32, // Custom Limit - Jose Luis
+    sendResetPassword: async ({ user, url }) =>
+      sendEmail({ resetUrl: url, userEmail: user.email }),
   },
   socialProviders: {
     google: {

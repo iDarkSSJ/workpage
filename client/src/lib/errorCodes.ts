@@ -43,6 +43,9 @@ export const errorCodes = {
   VALIDATION_ERROR: {
     es: "Hubo un error validando los datos entregados.",
   },
+  INVALID_TOKEN: {
+    es: "Error validando el token."
+  }
 } satisfies ErrorTypes
 
 export const getErrorMessage = (code?: string): string =>

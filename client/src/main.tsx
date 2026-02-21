@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router"
 import RegisterPage from "./pages/RegisterPage.tsx"
 import LoginPage from "./pages/LoginPage.tsx"
 import { Toaster } from "react-hot-toast"
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx"
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,6 +18,8 @@ createRoot(document.getElementById("root")!).render(
 
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* 
         Layout elements

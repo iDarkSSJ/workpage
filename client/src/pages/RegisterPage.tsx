@@ -19,7 +19,7 @@ export default function RegisterPage() {
   }, [rol, setSearchParams, navigate])
 
   return (
-    <main className="flex flex-col items-center mt-24 space-y-8 mx-4">
+    <main className="w-full min-h-dvh flex flex-col justify-center items-center gap-8 bg-linear-to-b from-zinc-950 to-zinc-900 px-4 py-10 md:py-16">
       {rol === "freelance" || rol === "contractor" ? (
         <>
           <Card className="w-full max-w-md p-8 space-y-6">

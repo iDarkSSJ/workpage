@@ -12,6 +12,62 @@ type ApiResult = {
   error?: string
 }
 
+export const resetPasswordReq = async ({
+  newPassword,
+  token,
+}: {
+  newPassword: string
+  token: string
+}) => {
+  try {
+    const { error } = await authClient.resetPassword({
+      newPassword,
+      token,
+    })
+
+    if (error) {
+      return {
+        success: false,
+        error: getErrorMessage(error.code),
+      }
+    }
+
+    return { success: true }
+  } catch (err) {
+    console.error(err)
+
+    return {
+      success: false,
+      error: "Surgió un error cambiando la contraseña.",
+    }
+  }
+}
+
+export const forgotPasswordReq = async ({ email }: { email: string }) => {
+  try {
+    const { error } = await authClient.requestPasswordReset({
+      email,
+      redirectTo: "http://localhost:5173/reset-password", // TODO: USE .ENV INSTEAD
+    })
+
+    if (error) {
+      return {
+        success: false,
+        error: getErrorMessage(error.code),
+      }
+    }
+
+    return { success: true }
+  } catch (err) {
+    console.error(err)
+
+    return {
+      success: false,
+      error: "Surgió un error cambiando la contraseña.",
+    }
+  }
+}
+
 export const changePasswordReq = async (
   data: z.infer<typeof changePasswordSchema>,
 ): Promise<ApiResult> => {
