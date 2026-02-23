@@ -4,6 +4,7 @@ import Input from "../ui/Input"
 import { z } from "zod"
 import { showToast } from "../showToast"
 import { forgotPasswordReq } from "../../lib/authRequest"
+import { useLoading } from "../../context/LoadingContext"
 
 const DEFAULTFORMVALUES = {
   email: "",
@@ -16,34 +17,40 @@ const INITIALERRORS = {
 export default function ForgotPasswordForm() {
   const [formValues, setFormValues] = useState(DEFAULTFORMVALUES)
   const [errors, setErrors] = useState(INITIALERRORS)
+  const { isLoading, setLoading } = useLoading()
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
-    const validation = z.email().safeParse(formValues.email)
+    try {
+      const validation = z.email().safeParse(formValues.email)
 
-    if (!validation.success) {
-      const cause = z.treeifyError(validation.error)
+      if (!validation.success) {
+        const cause = z.treeifyError(validation.error)
 
-      return setErrors({
-        ...INITIALERRORS,
-        email: cause.errors[0] ?? "",
-      })
+        return setErrors({
+          ...INITIALERRORS,
+          email: cause.errors[0] ?? "",
+        })
+      }
+
+      const { success, error } = await forgotPasswordReq(formValues)
+
+      if (!success) {
+        showToast("error", error ?? "Ocurrió un error inesperado.")
+        return
+      }
+
+      showToast(
+        "success",
+        "Si el correo existe, recibirás un enlace para restablecer la contraseña.",
+      )
+
+      setFormValues(DEFAULTFORMVALUES)
+    } finally {
+      setLoading(false)
     }
-
-    const { success, error } = await forgotPasswordReq(formValues)
-
-    if (!success) {
-      showToast("error", error ?? "Ocurrió un error inesperado.")
-      return
-    }
-
-    showToast(
-      "success",
-      "Si el correo existe, recibirás un enlace para restablecer la contraseña.",
-    )
-
-    setFormValues(DEFAULTFORMVALUES)
   }
 
   const onChangeField =
@@ -68,6 +75,8 @@ export default function ForgotPasswordForm() {
       />
 
       <Button
+        disabled={isLoading}
+        aria-disabled={isLoading}
         type="submit"
         btnType="secondary"
         className="w-full py-2.5 text-sm">

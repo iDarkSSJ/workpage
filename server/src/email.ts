@@ -7,7 +7,7 @@ export const sendEmail = async ({ userEmail, resetUrl }) => {
   const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: userEmail,
-    subject: "Reinicia tu contraseña",
+    subject: "Restablecer contraseña",
     react: ResetPasswordEmail({ resetUrl }),
   })
 

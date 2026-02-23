@@ -7,6 +7,7 @@ import { userLoginSchema } from "../../validations/userSchema"
 import { z } from "zod"
 import { showToast } from "../showToast"
 import { signInReq } from "../../lib/authRequest"
+import { useLoading } from "../../context/LoadingContext"
 
 type FormValuesT = z.infer<typeof userLoginSchema>
 type FormErrorsT = Record<keyof FormValuesT, string>
@@ -24,30 +25,36 @@ const INITIALERRORS: Record<keyof typeof DEFAULTFORMVALUES, string> = {
 export default function LoginForm() {
   const [formValues, setFormValues] = useState<FormValuesT>(DEFAULTFORMVALUES)
   const [errors, setErrors] = useState<FormErrorsT>(INITIALERRORS)
+  const { isLoading, setLoading } = useLoading()
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
-    const validation = userLoginSchema.safeParse(formValues)
+    try {
+      const validation = userLoginSchema.safeParse(formValues)
 
-    if (!validation.success) {
-      const cause = z.treeifyError(validation.error)
+      if (!validation.success) {
+        const cause = z.treeifyError(validation.error)
 
-      return setErrors({
-        ...INITIALERRORS,
-        email: cause.properties?.email?.errors[0] ?? "",
-        password: cause.properties?.password?.errors[0] ?? "",
-      })
+        return setErrors({
+          ...INITIALERRORS,
+          email: cause.properties?.email?.errors[0] ?? "",
+          password: cause.properties?.password?.errors[0] ?? "",
+        })
+      }
+
+      const { success, error } = await signInReq(formValues)
+
+      if (!success) {
+        showToast("error", error ?? "Ocurrió un error inesperado.")
+        return
+      }
+
+      showToast("success", "Sesión iniciada correctamente.")
+    } finally {
+      setLoading(false)
     }
-
-    const { success, error } = await signInReq(formValues)
-
-    if (!success) {
-      showToast("error", error ?? "Ocurrió un error inesperado.")
-      return
-    }
-
-    showToast("success", "Sesión iniciada correctamente.")
   }
 
   const onChangeField =
@@ -81,6 +88,8 @@ export default function LoginForm() {
       </div>
 
       <Button
+        disabled={isLoading}
+        aria-disabled={isLoading}
         type="submit"
         btnType="secondary"
         className="w-full py-2.5 text-sm">
@@ -90,7 +99,7 @@ export default function LoginForm() {
       {/* OAuth */}
       <div className="flex flex-col gap-4">
         <Separator label="o continuar con" />
-        <GoogleBtn />
+        <GoogleBtn disabled={isLoading} aria-disabled={isLoading} />
       </div>
     </form>
   )

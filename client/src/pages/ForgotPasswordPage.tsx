@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <h1 className="text-2xl font-bold text-zinc-100">
-            Reiniciar Contraseña
+            Restablecer Contraseña
           </h1>
           <p className="text-sm text-zinc-400">
             Ingresa tu correo para reinicia tu contraseña

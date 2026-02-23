@@ -9,6 +9,7 @@ import { userSignUpSchema } from "../../validations/userSchema"
 import z from "zod"
 import { showToast } from "../showToast"
 import { signUpReq } from "../../lib/authRequest"
+import { useLoading } from "../../context/LoadingContext"
 
 interface RegisterFormProps {
   rol: UserType
@@ -42,32 +43,38 @@ export default function RegisterForm({
     userType: rol,
   })
   const [errors, setErrors] = useState<FormErrorsT>(INITIALERRORS)
+  const { isLoading, setLoading } = useLoading()
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
-    const validation = userSignUpSchema.safeParse(formValues)
+    try {
+      const validation = userSignUpSchema.safeParse(formValues)
 
-    if (!validation.success) {
-      const cause = z.treeifyError(validation.error)
+      if (!validation.success) {
+        const cause = z.treeifyError(validation.error)
 
-      return setErrors({
-        ...INITIALERRORS,
-        name: cause.properties?.name?.errors[0] ?? "",
-        userType: cause.properties?.userType?.errors[0] ?? "",
-        email: cause.properties?.email?.errors[0] ?? "",
-        password: cause.properties?.password?.errors[0] ?? "",
-      })
+        return setErrors({
+          ...INITIALERRORS,
+          name: cause.properties?.name?.errors[0] ?? "",
+          userType: cause.properties?.userType?.errors[0] ?? "",
+          email: cause.properties?.email?.errors[0] ?? "",
+          password: cause.properties?.password?.errors[0] ?? "",
+        })
+      }
+
+      const { success, error } = await signUpReq(formValues)
+
+      if (!success) {
+        showToast("error", error ?? "Ocurrió un error inesperado.")
+        return
+      }
+
+      showToast("success", "Sesión iniciada correctamente.")
+    } finally {
+      setLoading(false)
     }
-
-    const { success, error } = await signUpReq(formValues)
-
-    if (!success) {
-      showToast("error", error ?? "Ocurrió un error inesperado.")
-      return
-    }
-
-    showToast("success", "Sesión iniciada correctamente.")
   }
 
   const onChangeField =
@@ -137,6 +144,8 @@ export default function RegisterForm({
       </div>
 
       <Button
+        disabled={isLoading}
+        aria-disabled={isLoading}
         type="submit"
         btnType="secondary"
         className="w-full py-2.5 text-sm">
