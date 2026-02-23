@@ -1,9 +1,14 @@
+import { useLoading } from "../../context/LoadingContext"
 import { authClient } from "../../lib/authClient"
 import { getErrorMessage } from "../../lib/errorCodes"
 import Button from "../Button"
 import { showToast } from "../showToast"
 
-export default function GoogleBtn() {
+type GoogleBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+
+export default function GoogleBtn({ ...props }: GoogleBtnProps) {
+  const { isLoading } = useLoading()
+
   const googleSignIn = async () => {
     try {
       const { error } = await authClient.signIn.social({
@@ -24,6 +29,8 @@ export default function GoogleBtn() {
 
   return (
     <Button
+      disabled={isLoading}
+      aria-disabled={isLoading}
       type="button"
       onClick={googleSignIn}
       className="
@@ -31,10 +38,10 @@ export default function GoogleBtn() {
         flex items-center justify-center gap-3
         border 
         border-transparent
-        bg-primary-bg/45
-        text-white
-        hover:border-primary
-      ">
+      bg-primary-bg/45
+      text-white
+      hover:border-primary"
+      {...props}>
       <GoogleIcon />
       Google
     </Button>

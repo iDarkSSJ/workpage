@@ -5,6 +5,7 @@ import { z } from "zod"
 import { showToast } from "../showToast"
 import { resetPasswordReq } from "../../lib/authRequest"
 import { resetPasswordSchema } from "../../validations/userSchema"
+import { useLoading } from "../../context/LoadingContext"
 
 type FormValuesT = z.infer<typeof resetPasswordSchema>
 
@@ -25,35 +26,41 @@ interface Props {
 export default function ResetPasswordForm({ token }: Props) {
   const [formValues, setFormValues] = useState(DEFAULTFORMVALUES)
   const [errors, setErrors] = useState(INITIALERRORS)
+  const { isLoading, setLoading } = useLoading()
 
   const onSubmitForm = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
-    const validation = resetPasswordSchema.safeParse(formValues)
+    try {
+      const validation = resetPasswordSchema.safeParse(formValues)
 
-    if (!validation.success) {
-      const cause = z.treeifyError(validation.error)
+      if (!validation.success) {
+        const cause = z.treeifyError(validation.error)
 
-      return setErrors({
-        ...INITIALERRORS,
-        password: cause.properties?.password?.errors[0] ?? "",
-        confirmPassword: cause.properties?.confirmPassword?.errors[0] ?? "",
+        return setErrors({
+          ...INITIALERRORS,
+          password: cause.properties?.password?.errors[0] ?? "",
+          confirmPassword: cause.properties?.confirmPassword?.errors[0] ?? "",
+        })
+      }
+
+      const { success, error } = await resetPasswordReq({
+        token,
+        newPassword: formValues.password,
       })
+
+      if (!success) {
+        showToast("error", error ?? "No se pudo restablecer la contraseña.")
+        return
+      }
+
+      showToast("success", "Contraseña actualizada correctamente.")
+
+      setFormValues(DEFAULTFORMVALUES)
+    } finally {
+      setLoading(false)
     }
-
-    const { success, error } = await resetPasswordReq({
-      token,
-      newPassword: formValues.password,
-    })
-
-    if (!success) {
-      showToast("error", error ?? "No se pudo restablecer la contraseña.")
-      return
-    }
-
-    showToast("success", "Contraseña actualizada correctamente.")
-
-    setFormValues(DEFAULTFORMVALUES)
   }
 
   const onChangeField =
@@ -88,6 +95,8 @@ export default function ResetPasswordForm({ token }: Props) {
       />
 
       <Button
+        disabled={isLoading}
+        aria-disabled={isLoading}
         type="submit"
         btnType="secondary"
         className="w-full py-2.5 text-sm mt-2">
