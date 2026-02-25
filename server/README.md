@@ -1,4 +1,4 @@
-
+// ACTUALIZADO 24/FEB (CAMPO "role" añadido a la tabla "users")
 ### TABLA `user` - Usuarios:
 
 - Esta tabla guarda la identidad y datos básicos del usuario.
@@ -10,6 +10,7 @@
 | `email`                       | Correo electrónico único del usuario               |
 | `email_verified`              | Si el correo fue verificado (true/false)           |
 | `image`                       | URL de imagen de perfil                            |
+| `role`                        | Tipo de usuario (Contratante o Freelance)          |
 | `created_at`, `updated_at`    | Fechas de creación y última modificación           |
 
 ---

@@ -66,6 +66,7 @@ export default function ForgotPasswordForm() {
   return (
     <form onSubmit={onSubmitForm} className="flex flex-col gap-2">
       <Input
+        value={formValues.email}
         errorMessage={errors.email}
         onChange={onChangeField("email")}
         label="Email"
