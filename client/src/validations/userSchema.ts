@@ -24,6 +24,17 @@ const passwordRegex =
 
 const nameRegex = /^(?=.{1,50}$)[\p{L}]+(?:\s[\p{L}]+)*$/u
 
+export const nameSchema = z
+  .string()
+  .min(1, "Debes escribir tu nombre")
+  .max(50, "Tu nombre no puede tener mas de 50 caracteres.")
+  .regex(/[\p{L}]/u, "El nombre debe contener letras.")
+  .regex(/^\S/, "No se permiten espacios al inicio.")
+  .regex(/\S$/, "No se permiten espacios al final.")
+  .regex(/^(?!.*\s{2})/, "No se permiten espacios dobles.")
+  // Validación global: solo permite letras Unicode y espacios simples
+  .regex(nameRegex, "El nombre contiene caracteres inválidos.")
+
 const passwordSchema = z
   .string()
   .min(8, "La contraseña debe tener al menos 8 caracteres")
@@ -55,17 +66,8 @@ export const userLoginSchema = z.object({
 })
 
 export const userSignUpSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Debes escribir tu nombre")
-    .max(50, "Tu nombre no puede tener mas de 50 caracteres.")
-    .regex(/[\p{L}]/u, "El nombre debe contener letras.")
-    .regex(/^\S/, "No se permiten espacios al inicio.")
-    .regex(/\S$/, "No se permiten espacios al final.")
-    .regex(/^(?!.*\s{2})/, "No se permiten espacios dobles.")
-    // Validación global: solo permite letras Unicode y espacios simples
-    .regex(nameRegex, "El nombre contiene caracteres inválidos."),
-  userType: z.enum(
+  name: nameSchema,
+  role: z.enum(
     ["contractor", "freelance"],
     "Opción no válida, debe ser Contratante o Freelance.",
   ),

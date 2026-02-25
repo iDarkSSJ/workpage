@@ -1,4 +1,4 @@
-
+// ACTUALIZADO 24/FEB (CAMPO "role" añadido a la tabla "users")
 
 ## user
 
@@ -9,6 +9,7 @@
 | email           | text        | UNIQUE  |
 | email_verified  | boolean     | —       |
 | image           | text        | —       |
+| role            | text        | —       |
 | created_at      | timestamp   | —       |
 | updated_at      | timestamp   | —       |
 

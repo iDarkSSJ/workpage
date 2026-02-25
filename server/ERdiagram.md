@@ -1,7 +1,8 @@
 Diagrama entidad relación hasta el momento
 2/feb de las tablas [user, account, session, verification] (cuyos schemas han sido creados por Better Auth para poder manejar correcta y mas facilmente el apartado de autenticación de el proyecto)
 
-mermaid diagram -> (mermaid JS)[https://mermaid.live/edit#pako:eNqtVN9v2jAQ_leie04RhqSEvFWMSqganUq7hylS5MUHWE3syHYoHeV_n5OMlIagMm1-ir_zfffjy90OEskQQkD1hdOVolkkIuHY87SYPji7-rs8BrfG4cz5dtfCBM2wBWFGefqO_ZQyRSpqON6g4kuOrE2d0dUxD89QG5rlTqKQGmQxNV3WImcfrPtD_jeTyf3T_PGiEmiSyEKYmLeTypXccIbq1FLoCnVuO7hQ69jIZxQtk8KlQr3utHF2Ajc1HlPGuM25ZTnTjg8hut-W0XQi87ZoOdX6RSr2HzVYTBeL2f38Uw0aprMJn-3N32X2nkEeU8ZsKN2lq_0ThflE8KbI79OH2e1scvN4SaU1ZtnLEVAtw4amBV7cln8Vpxrwt7erK7lrhiV0IiDhPILTJwctj56ACyvFGYRGFehChsoOuL1C1YUIzBrtaoDSg-GSFqkpvfbWLafih5TZwVPJYrWGcElTbW91xn_WUYMqFHYQJ-WcQjgc-RUJhDvY2uug542HHgk83_OuBwFx4RXCgd8Lhn1_RAJ_7Pv-cLx34VcVlfTIgFx7Qd_r9wkhwXjkAjJupPpab8NqKe5_A1OVkS0]
+-- ACTUALIZADO 24/FEB (CAMPO "role" añadido a la tabla "users")
+mermaid diagram -> (mermaid JS)[https://mermaid.live/edit#pako:eNqtVN9v2jAQ_leie05RAgkQv1WMSmganUq7hylS5MUHWEvsyHYYG-V_n5OMtA1BZdr8ZH93990v3x0glQyBAKoPnG4UzWMRC8eep9X8wTk09-oY3BuHM-fzxw4maI4dCHPKsxfsm5QZUtHAyQ4VX3NkXeqcbro8ytq9gniO2tC8cFKF1CBLqOmTlgV7Iz2eUrqdze6flo9XZUXTVJbCJLwbZ6HkjjNU55JS16hz18OFWidGfkfRzRDXCvW2V8bZGdzm-JoywX3BLcuFcrxx0a9bedOpLLr1L6jWP6Ri_7EHq_lqtbhfvtuDluliwBdr83eRvURQJJQx60r39dV-TmHeaXib5Jf5w-JuMbt9vCbTBrPs1VSojmBHsxKvLsu_Nqee-efnmxt5aIeFODH4ZBnDucqpl60KuLBRnAExqkQXclR24u0T6hrEYLZodwVU-gzXtMxMRXu0ZgUVX6XMT5ZKlpstkDXNtH018f7ZT60KCjuFs2pIgUQ1A5AD7IH443AQRYEX-N5oEo6m_tSFn0CC4WDse1EQBeNwOJp4wdGFX7VPbzAdhv5o6kXDysgPJy4g40aqT81yrHfk8TesRJU9]
 
 `erDiagram
 
@@ -11,6 +12,7 @@ mermaid diagram -> (mermaid JS)[https://mermaid.live/edit#pako:eNqtVN9v2jAQ_leie
         text email
         boolean email_verified
         text image
+        text role
         timestamp created_at
         timestamp updated_at
     }

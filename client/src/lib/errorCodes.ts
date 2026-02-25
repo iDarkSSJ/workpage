@@ -44,8 +44,11 @@ export const errorCodes = {
     es: "Hubo un error validando los datos entregados.",
   },
   INVALID_TOKEN: {
-    es: "Error validando el token."
-  }
+    es: "Error validando el token.",
+  },
+  EMAIL_NOT_VERIFIED: {
+    es: "Correo no verificado, revisa tu bandeja de entrada para verificar tu correo.",
+  },
 } satisfies ErrorTypes
 
 export const getErrorMessage = (code?: string): string =>
