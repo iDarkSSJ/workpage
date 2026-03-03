@@ -1,59 +1,75 @@
-// ACTUALIZADO 24/FEB (CAMPO "role" añadido a la tabla "users")
+# AUTH SCHEMA
 
-## user
+> Tablas creadas y gestionadas por **Better Auth**. No modificar manualmente.
+> Última actualización: 24/feb — campo `role` añadido a `user`
 
-| Columna         | Tipo de dato | Key     |
-|-----------------|-------------|---------|
-| id              | text        | PK      |
-| name            | text        | —       |
-| email           | text        | UNIQUE  |
-| email_verified  | boolean     | —       |
-| image           | text        | —       |
-| role            | text        | —       |
-| created_at      | timestamp   | —       |
-| updated_at      | timestamp   | —       |
+---
 
+### `user` — Usuarios
 
-## account
+Identidad y datos básicos del usuario. Un mismo usuario puede tener perfil de freelancer, contratante, o ambos.
 
-| Columna                    | Tipo de dato | Key |
-|----------------------------|-------------|-----|
-| id                         | text        | PK  |
-| account_id                 | text        | —   |
-| provider_id                | text        | —   |
-| user_id                    | text        | FK  |
-| access_token               | text        | —   |
-| refresh_token              | text        | —   |
-| id_token                   | text        | —   |
-| access_token_expires_at    | timestamp   | —   |
-| refresh_token_expires_at   | timestamp   | —   |
-| scope                      | text        | —   |
-| password                   | text        | —   |
-| created_at                 | timestamp   | —   |
-| updated_at                 | timestamp   | —   |
+| Columna          | Tipo      | Key    | Descripción                                          |
+| ---------------- | --------- | ------ | ---------------------------------------------------- |
+| `id`             | text      | PK     | Identificador único del usuario                      |
+| `name`           | text      | —      | Nombre visible en la interfaz                        |
+| `email`          | text      | UNIQUE | Correo electrónico                                   |
+| `email_verified` | boolean   | —      | Si el correo fue verificado                          |
+| `image`          | text      | —      | URL de foto de perfil                                |
+| `role`           | text      | —      | Rol activo del usuario (`freelancer` / `contractor`) |
+| `created_at`     | timestamp | —      | Fecha de creación                                    |
+| `updated_at`     | timestamp | —      | Última modificación                                  |
 
+---
 
-## session
+### `session` — Sesiones activas
 
-| Columna     | Tipo de dato | Key     |
-|------------|-------------|---------|
-| id         | text        | PK      |
-| expires_at | timestamp   | —       |
-| token      | text        | UNIQUE  |
-| created_at | timestamp   | —       |
-| updated_at | timestamp   | —       |
-| ip_address | text        | —       |
-| user_agent | text        | —       |
-| user_id    | text        | FK      |
+Controla quién está conectado y hasta cuándo su token es válido.
 
+| Columna      | Tipo      | Key    | Descripción                                         |
+| ------------ | --------- | ------ | --------------------------------------------------- |
+| `id`         | text      | PK     | Identificador único de la sesión                    |
+| `token`      | text      | UNIQUE | Token de sesión (usado para autenticar solicitudes) |
+| `expires_at` | timestamp | —      | Fecha/hora en que la sesión expira                  |
+| `ip_address` | text      | —      | Dirección IP del cliente                            |
+| `user_agent` | text      | —      | Navegador/dispositivo de la sesión                  |
+| `user_id`    | text      | FK     | -> `user.id` (cascade delete)                        |
+| `created_at` | timestamp | —      | Fecha de creación                                   |
+| `updated_at` | timestamp | —      | Última modificación                                 |
 
-## verification
+---
 
-| Columna     | Tipo de dato | Key   |
-|------------|-------------|-------|
-| id         | text        | PK    |
-| identifier | text        | INDEX |
-| value      | text        | —     |
-| expires_at | timestamp   | —     |
-| created_at | timestamp   | —     |
-| updated_at | timestamp   | —     |
+### `account` — Cuentas de autenticación
+
+Cuentas de login asociadas a un usuario. Permite múltiples métodos (OAuth + email/password) bajo el mismo `user`.
+
+| Columna                    | Tipo      | Key | Descripción                                         |
+| -------------------------- | --------- | --- | --------------------------------------------------- |
+| `id`                       | text      | PK  | Identificador único                                 |
+| `account_id`               | text      | —   | ID del proveedor externo (ej: ID de Google)         |
+| `provider_id`              | text      | —   | Nombre del proveedor (`"google"`, `"github"`, etc.) |
+| `user_id`                  | text      | FK  | -> `user.id` (cascade delete)                        |
+| `access_token`             | text      | —   | Token OAuth de acceso                               |
+| `refresh_token`            | text      | —   | Token OAuth de renovación                           |
+| `id_token`                 | text      | —   | Token de identidad OAuth                            |
+| `access_token_expires_at`  | timestamp | —   | Expiración del access token                         |
+| `refresh_token_expires_at` | timestamp | —   | Expiración del refresh token                        |
+| `scope`                    | text      | —   | Permisos OAuth otorgados                            |
+| `password`                 | text      | —   | Contraseña hasheada (login email/password)          |
+| `created_at`               | timestamp | —   | Fecha de creación                                   |
+| `updated_at`               | timestamp | —   | Última modificación                                 |
+
+---
+
+### `verification` — Verificaciones temporales
+
+Tokens y códigos temporales para flujos de verificación (email, reset de contraseña).
+
+| Columna      | Tipo      | Key   | Descripción                                   |
+| ------------ | --------- | ----- | --------------------------------------------- |
+| `id`         | text      | PK    | Identificador único                           |
+| `identifier` | text      | INDEX | Lo que se verifica (ej: email del usuario)    |
+| `value`      | text      | —     | Código o token generado                       |
+| `expires_at` | timestamp | —     | Fecha/hora en que el token deja de ser válido |
+| `created_at` | timestamp | —     | Fecha de creación                             |
+| `updated_at` | timestamp | —     | Última modificación                           |
