@@ -8,6 +8,20 @@
       "when": 1770931402748,
       "tag": "0000_silky_sugar_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771959226368,
+      "tag": "0001_optimal_sprite",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772494919614,
+      "tag": "0002_natural_riptide",
+      "breakpoints": true
     }
   ]
 }
