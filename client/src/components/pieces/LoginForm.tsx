@@ -8,6 +8,7 @@ import { z } from "zod"
 import { showToast } from "../showToast"
 import { signInReq } from "../../lib/authRequest"
 import { useLoading } from "../../context/LoadingContext"
+import Link from "../Link"
 
 type FormValuesT = z.infer<typeof userLoginSchema>
 type FormErrorsT = Record<keyof FormValuesT, string>
@@ -66,9 +67,10 @@ export default function LoginForm() {
     }
 
   return (
-    <form onSubmit={onSubmitForm} className="flex flex-col gap-6">
+    <form onSubmit={onSubmitForm} className="flex flex-col">
       <div className="flex flex-col">
         <Input
+          value={formValues.email}
           errorMessage={errors.email}
           onChange={onChangeField("email")}
           label="Email"
@@ -77,6 +79,7 @@ export default function LoginForm() {
           autoComplete="email"
         />
         <Input
+          value={formValues.password}
           maxLength={32}
           errorMessage={errors.password}
           onChange={onChangeField("password")}
@@ -87,19 +90,25 @@ export default function LoginForm() {
         />
       </div>
 
-      <Button
-        disabled={isLoading}
-        aria-disabled={isLoading}
-        type="submit"
-        btnType="secondary"
-        className="w-full py-2.5 text-sm">
-        Iniciar Sesión
-      </Button>
+      <div className="gap-2 flex flex-col">
+        <Link path="/forgot-password" className="ml-auto">
+          ¿Olvidaste la contraseña?
+        </Link>
 
-      {/* OAuth */}
-      <div className="flex flex-col gap-4">
-        <Separator label="o continuar con" />
-        <GoogleBtn disabled={isLoading} aria-disabled={isLoading} />
+        <Button
+          disabled={isLoading}
+          aria-disabled={isLoading}
+          type="submit"
+          btnType="secondary"
+          className="w-full py-2.5 text-sm">
+          Iniciar Sesión
+        </Button>
+
+        {/* OAuth */}
+        <div className="flex flex-col gap-4">
+          <Separator label="o continuar con" />
+          <GoogleBtn disabled={isLoading} aria-disabled={isLoading} />
+        </div>
       </div>
     </form>
   )

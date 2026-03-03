@@ -2,16 +2,20 @@ import express from "express"
 import { toNodeHandler } from "better-auth/node"
 import { auth } from "./auth/auth"
 import cors from "cors"
+import authRouter from "./router/auth"
 
 const app = express()
 const port = 3000
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // TODO: USE .ENV INSTEAD
+    origin: process.env.CLIENT_URL, 
     credentials: true,
   }),
 )
+
+app.use("/api/auth", authRouter)
+
 // BETTER AUTH HANDLER - `https://www.better-auth.com/docs/integrations/express#mount-the-handler`
 // IT HAVE TO BE BEFORE THE JSON MIDDLEWARE - (jose)
 app.all("/api/auth/*splat", toNodeHandler(auth))

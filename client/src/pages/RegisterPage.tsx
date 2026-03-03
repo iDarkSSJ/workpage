@@ -9,18 +9,18 @@ export default function RegisterPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const rol = searchParams.get("rol")
+  const role = searchParams.get("role")
 
   useEffect(() => {
-    if (rol && rol !== "freelance" && rol !== "contractor") {
+    if (role && role !== "freelance" && role !== "contractor") {
       setSearchParams({})
       navigate("/register", { replace: true })
     }
-  }, [rol, setSearchParams, navigate])
+  }, [role, setSearchParams, navigate])
 
   return (
     <main className="w-full min-h-dvh flex flex-col justify-center items-center gap-8 bg-linear-to-b from-zinc-950 to-zinc-900 px-4 py-10 md:py-16">
-      {rol === "freelance" || rol === "contractor" ? (
+      {role === "freelance" || role === "contractor" ? (
         <>
           <Card className="w-full max-w-md p-8 space-y-6">
             <div className="text-center space-y-2">
@@ -33,7 +33,7 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <RegisterForm rol={rol} setSearchParams={setSearchParams} />
+            <RegisterForm role={role} setSearchParams={setSearchParams} />
           </Card>
           <div>
             ¿Ya tienes una cuenta? <Link path="/login">Inicia Sesión</Link>
@@ -41,13 +41,13 @@ export default function RegisterPage() {
         </>
       ) : (
         <>
-          <h1 className="text-7xl font-bold">
-            Elije tu <span className="text-primary">Rol</span>
+          <h1 className="text-7xl font-bold uppercase text-center">
+            Elije tu <span className="text-primary">rol</span>
           </h1>
-          <div className="flex max-w-2xl gap-4 font-semibold">
+          <div className="flex flex-col max-w-2xl gap-4 font-semibold md:flex-row">
             <Link
               btnStyle
-              path="/register?rol=freelance"
+              path="/register?role=freelance"
               className="group p-0 rounded-3xl border-2 border-transparent hover:border-primary hover:shadow-xl hover:shadow-primary/30">
               <Card>
                 <span className="text-white text-center text-xl block group-hover:text-primary">
@@ -61,7 +61,7 @@ export default function RegisterPage() {
             </Link>
             <Link
               btnStyle
-              path="/register?rol=contractor"
+              path="/register?role=contractor"
               className="group p-0 rounded-3xl border-2 border-transparent hover:border-primary hover:shadow-xl hover:shadow-primary/30">
               <Card>
                 <span className="text-white text-center text-xl block group-hover:text-primary">

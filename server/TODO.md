@@ -1,5 +1,0 @@
-- Reset password (with email confirmation)
-- Manually Change password
-- Delete password
-- Google Provider Login
-- Google Provider Account Linking

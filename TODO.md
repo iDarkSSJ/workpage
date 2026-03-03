@@ -1,0 +1,11 @@
+- Verify Email ☑️
+- Update User Info ☑️
+- Protected Routes ☑️
+- Delete Account ☑️
+- Manually linking google Account ☑️
+- Loading State on Request ☑️
+- Change Password ☑️
+- Reset Password ☑️
+
+- Error Handling with toasts ☑️
+- GOOGLE OAUTH ☑️

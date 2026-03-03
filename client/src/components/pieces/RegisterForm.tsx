@@ -12,35 +12,35 @@ import { signUpReq } from "../../lib/authRequest"
 import { useLoading } from "../../context/LoadingContext"
 
 interface RegisterFormProps {
-  rol: UserType
+  role: roleType
   setSearchParams: SetURLSearchParams
 }
 
 type FormValuesT = z.infer<typeof userSignUpSchema>
 type FormErrorsT = Record<keyof FormValuesT, string>
-type UserType = "contractor" | "freelance"
+type roleType = "contractor" | "freelance"
 
 const DEFAULTFORMVALUES: z.infer<typeof userSignUpSchema> = {
-  userType: "" as UserType,
+  role: "" as roleType,
   name: "",
   email: "",
   password: "",
 }
 
 const INITIALERRORS: Record<keyof typeof DEFAULTFORMVALUES, string> = {
-  userType: "",
+  role: "",
   name: "",
   email: "",
   password: "",
 }
 
 export default function RegisterForm({
-  rol,
+  role,
   setSearchParams,
 }: RegisterFormProps) {
   const [formValues, setFormValues] = useState<FormValuesT>({
     ...DEFAULTFORMVALUES,
-    userType: rol,
+    role,
   })
   const [errors, setErrors] = useState<FormErrorsT>(INITIALERRORS)
   const { isLoading, setLoading } = useLoading()
@@ -58,7 +58,7 @@ export default function RegisterForm({
         return setErrors({
           ...INITIALERRORS,
           name: cause.properties?.name?.errors[0] ?? "",
-          userType: cause.properties?.userType?.errors[0] ?? "",
+          role: cause.properties?.role?.errors[0] ?? "",
           email: cause.properties?.email?.errors[0] ?? "",
           password: cause.properties?.password?.errors[0] ?? "",
         })
@@ -71,7 +71,7 @@ export default function RegisterForm({
         return
       }
 
-      showToast("success", "Sesión iniciada correctamente.")
+      showToast("success", "Cuenta creada correctamente.")
     } finally {
       setLoading(false)
     }
@@ -83,13 +83,14 @@ export default function RegisterForm({
       setFormValues((prev) => ({ ...prev, [field]: e.target.value }))
 
       if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
-      if (field === "userType") setSearchParams({ rol: e.target.value })
+      if (field === "role") setSearchParams({ role: e.target.value })
     }
 
   return (
     <form onSubmit={onSubmitForm} className="flex flex-col gap-6">
       <div className="flex flex-col">
         <Input
+          value={formValues.name}
           errorMessage={errors.name}
           onChange={onChangeField("name")}
           label="Nombre Completo"
@@ -97,6 +98,7 @@ export default function RegisterForm({
           autoComplete="name"
         />
         <Input
+          value={formValues.email}
           errorMessage={errors.email}
           onChange={onChangeField("email")}
           label="Email"
@@ -105,6 +107,7 @@ export default function RegisterForm({
           autoComplete="email"
         />
         <Input
+          value={formValues.password}
           errorMessage={errors.password}
           onChange={onChangeField("password")}
           maxLength={32}
@@ -122,23 +125,23 @@ export default function RegisterForm({
 
         <div className="flex flex-col gap-2">
           <Radio
-            checked={formValues.userType === "contractor"}
-            onChange={onChangeField("userType")}
-            name="userType"
+            checked={formValues.role === "contractor"}
+            onChange={onChangeField("role")}
+            name="roleType"
             value="contractor"
             label="Contratante"
           />
           <Radio
-            checked={formValues.userType === "freelance"}
-            onChange={onChangeField("userType")}
-            name="userType"
+            checked={formValues.role === "freelance"}
+            onChange={onChangeField("role")}
+            name="roleType"
             value="freelance"
             label="Freelance"
           />
         </div>
-        {errors.userType && (
+        {errors.role && (
           <span className="text-danger text-sm min-h-5 block">
-            {errors.userType}
+            {errors.role}
           </span>
         )}
       </div>

@@ -1,5 +1,5 @@
 {
-  "name": "backtestzone",
+  "name": "workpage",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -18,7 +18,8 @@
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
     "pg": "^8.18.0",
-    "resend": "^6.9.2"
+    "resend": "^6.9.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

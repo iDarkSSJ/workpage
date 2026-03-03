@@ -6,6 +6,8 @@ import { showToast } from "../showToast"
 
 type GoogleBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement>
 
+const CLIENT_URL = import.meta.env.VITE_CLIENT_URL
+
 export default function GoogleBtn({ ...props }: GoogleBtnProps) {
   const { isLoading } = useLoading()
 
@@ -13,7 +15,7 @@ export default function GoogleBtn({ ...props }: GoogleBtnProps) {
     try {
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "http://localhost:5173/", // TODO: use .env instead
+        callbackURL: `${CLIENT_URL}/dashboard`,
       })
 
       if (error) {
