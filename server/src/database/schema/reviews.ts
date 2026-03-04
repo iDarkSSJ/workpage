@@ -22,6 +22,7 @@ export const review = pgTable(
     revieweeId: text("reviewee_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    revieweeRole: text("reviewee_role").notNull(), // "freelancer" | "contractor"
     rating: numeric("rating", { precision: 3, scale: 2 }).notNull(), // 1.00 – 5.00
     comment: text("comment"),
     createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -22,6 +22,13 @@
       "when": 1772494919614,
       "tag": "0002_natural_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772584704551,
+      "tag": "0003_aspiring_lord_hawal",
+      "breakpoints": true
     }
   ]
 }

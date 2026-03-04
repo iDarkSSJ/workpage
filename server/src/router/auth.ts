@@ -2,11 +2,11 @@ import { Request, Response, Router } from "express"
 import { db } from "../database/database"
 import { auth } from "../auth/auth"
 import { fromNodeHeaders } from "better-auth/node"
-import { requireAuth } from "../middleware/auth.middleware"
 import z from "zod"
 import { eq } from "drizzle-orm"
 import * as authSchema from "../database/auth-schema"
 import express from "express"
+import { requireAuth } from "../middleware/requireAuth"
 
 const authRouter = Router()
 

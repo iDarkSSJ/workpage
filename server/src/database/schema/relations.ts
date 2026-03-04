@@ -7,6 +7,7 @@ import {
   freelancerExperience,
   freelancerCertification,
   featuredProject,
+  skill,
 } from "./profiles"
 import { project, projectSkill, proposal, contract } from "./projects"
 import { review } from "./reviews"
@@ -54,6 +55,30 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   conversations: many(conversation),
 }))
 
+// Proyecto -> skills requeridas
+export const projectSkillRelations = relations(projectSkill, ({ one }) => ({
+  project: one(project, {
+    fields: [projectSkill.projectId],
+    references: [project.id],
+  }),
+  skill: one(skill, {
+    fields: [projectSkill.skillId],
+    references: [skill.id],
+  }),
+}))
+
+export const proposalRelations = relations(proposal, ({ one, many }) => ({
+  project: one(project, {
+    fields: [proposal.projectId],
+    references: [project.id],
+  }),
+  freelancer: one(freelancerProfile, {
+    fields: [proposal.freelancerId],
+    references: [freelancerProfile.id],
+  }),
+  contracts: one(contract),
+}))
+
 // Contrato -> reviews generados al completarse
 export const contractRelations = relations(contract, ({ one, many }) => ({
   proposal: one(proposal, {
@@ -96,3 +121,21 @@ export const conversationRelations = relations(
     messages: many(message),
   }),
 )
+
+// Review -> quien la hizo (reviewer) y quien la recibió (reviewee), ambos son users
+export const reviewRelations = relations(review, ({ one }) => ({
+  contract: one(contract, {
+    fields: [review.contractId],
+    references: [contract.id],
+  }),
+  reviewer: one(user, {
+    fields: [review.reviewerId],
+    references: [user.id],
+    relationName: "reviewer",
+  }),
+  reviewee: one(user, {
+    fields: [review.revieweeId],
+    references: [user.id],
+    relationName: "reviewee",
+  }),
+}))
