@@ -2,6 +2,7 @@
 
 > Tablas creadas y gestionadas por **Better Auth**. No modificar manualmente.
 > Última actualización: 24/feb — campo `role` añadido a `user`
+> Actualmente se cambio la idea de el campo `role` y se permitio que un usuario pudiera tener perfil de freelancer y contratante. Pero se dejo el campo `role` para saber la primera opcion que el usuario eligio.
 
 ---
 
