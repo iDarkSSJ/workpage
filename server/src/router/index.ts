@@ -6,7 +6,7 @@ import contractsRouter from "./contracts"
 import reviewsRouter from "./reviews"
 import chatRouter from "./chat"
 
-const   apiRouter = Router()
+const apiRouter = Router()
 
 // Tanto Contractors como Freelancers usan el mismo router de perfiles
 // profiles/freelancers

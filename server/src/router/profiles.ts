@@ -1,8 +1,11 @@
 import { Router } from "express"
+import { requireAuth } from "../middleware/requireAuth"
+import { Request } from "express"
 import { db } from "../database/database"
 import * as schema from "../database/schema"
 import { eq, and } from "drizzle-orm"
 import { z } from "zod"
+import crypto from "crypto"
 
 const router = Router()
 
@@ -71,15 +74,70 @@ router.get("/freelancers/:id", async (req, res) => {
 
 // endpoint protegido con middleware
 // crear perfil de freelancer
-// -----------
-// pendiente
-// -----------
+router.post("/freelancers/me", requireAuth, async (req: Request, res) => {
+  try {
+    const parsed = freelancerSchema.parse(req.body)
+
+    const existing = await db.query.freelancerProfile.findFirst({
+      where: eq(schema.freelancerProfile.userId, req.session!.user.id),
+    })
+
+    if (existing) {
+      res.status(400).json({ error: "El perfil ya existe." })
+      return
+    }
+
+    const [newProfile] = await db
+      .insert(schema.freelancerProfile)
+      .values({
+        id: crypto.randomUUID(),
+        userId: req.session!.user.id,
+        ...parsed,
+        hourlyRate: parsed.hourlyRate ? String(parsed.hourlyRate) : null,
+      })
+      .returning()
+
+    res.status(201).json(newProfile)
+  } catch (error) {
+    console.error(error)
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: "Error validando los datos del perfil." })
+      return
+    }
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
 
 // endpoint protegido con middleware
 // actualizar perfil de freelancer
-// -----------
-// pendiente
-// -----------
+router.put("/freelancers/me", requireAuth, async (req: Request, res) => {
+  try {
+    const parsed = freelancerSchema.parse(req.body)
+
+    const [updatedProfile] = await db
+      .update(schema.freelancerProfile)
+      .set({
+        ...parsed,
+        hourlyRate: parsed.hourlyRate ? String(parsed.hourlyRate) : null,
+      })
+      .where(eq(schema.freelancerProfile.userId, req.session!.user.id))
+      .returning()
+
+    if (!updatedProfile) {
+      res.status(404).json({ error: "Perfil no encontrado" })
+      return
+    }
+
+    res.json(updatedProfile)
+  } catch (error) {
+    console.error(error)
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: "Error validando los datos del perfil." })
+      return
+    }
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
 
 // --- CONTRACTORS ---
 
@@ -123,14 +181,65 @@ router.get("/contractors/:id", async (req, res) => {
 
 // endpoint protegido con middleware
 // crear perfil de contratista
-// -----------
-// pendiente
-// -----------
+router.post("/contractors/me", requireAuth, async (req: Request, res) => {
+  try {
+    const parsed = contractorSchema.parse(req.body)
+
+    const existing = await db.query.contractorProfile.findFirst({
+      where: eq(schema.contractorProfile.userId, req.session!.user.id),
+    })
+
+    if (existing) {
+      res.status(400).json({ error: "El perfil ya existe." })
+      return
+    }
+
+    const [newProfile] = await db
+      .insert(schema.contractorProfile)
+      .values({
+        id: crypto.randomUUID(),
+        userId: req.session!.user.id,
+        ...parsed,
+      })
+      .returning()
+
+    res.status(201).json(newProfile)
+  } catch (error) {
+    console.error(error)
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: "Error validando los datos del perfil." })
+      return
+    }
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
 
 // endpoint protegido con middleware
 // actualizar perfil de contratista
-// -----------
-// pendiente
-// -----------
+router.put("/contractors/me", requireAuth, async (req: Request, res) => {
+  try {
+    const parsed = contractorSchema.parse(req.body)
+
+    const [updatedProfile] = await db
+      .update(schema.contractorProfile)
+      .set(parsed)
+      .where(eq(schema.contractorProfile.userId, req.session!.user.id))
+      .returning()
+
+    if (!updatedProfile) {
+      res.status(404).json({ error: "Perfil no encontrado" })
+      return
+    }
+
+    res.json(updatedProfile)
+  } catch (error) {
+    console.error(error)
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: "Error validando los datos del perfil." })
+      return
+    }
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
 
 export default router

@@ -98,8 +98,41 @@ router.post("/contract/:contractId", requireAuth, async (req: Request, res) => {
 })
 
 // PATCH /:id — editar una review propia
-// -----------
-// pendiente
-// -----------
+router.patch("/:id", requireAuth, async (req: Request, res) => {
+  try {
+    const parsed = createReviewSchema.partial().parse(req.body)
+
+    const existing = await db.query.review.findFirst({
+      where: eq(schema.review.id, req.params.id as string),
+    })
+
+    if (!existing) {
+      res.status(404).json({ error: "Review no encontrada" })
+      return
+    }
+
+    if (existing.reviewerId !== req.session!.user.id) {
+      res.status(403).json({ error: "Solo puedes editar tus propias reseñas" })
+      return
+    }
+
+    const [updated] = await db
+      .update(schema.review)
+      .set({
+        ...(parsed.rating !== undefined && { rating: String(parsed.rating) }),
+        ...(parsed.comment !== undefined && { comment: parsed.comment }),
+      })
+      .where(eq(schema.review.id, req.params.id as string))
+      .returning()
+
+    res.json(updated)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: "Error validando los datos." })
+      return
+    }
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
 
 export default router
