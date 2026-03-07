@@ -3,13 +3,14 @@ import { toNodeHandler } from "better-auth/node"
 import { auth } from "./auth/auth"
 import cors from "cors"
 import authRouter from "./router/auth"
+import apiRouter from "./router/index"
 
 const app = express()
 const port = 3000
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, 
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 )
@@ -21,6 +22,8 @@ app.use("/api/auth", authRouter)
 app.all("/api/auth/*splat", toNodeHandler(auth))
 
 app.use(express.json())
+
+app.use("/api", apiRouter)
 
 app.listen(port, () => {
   console.log(
