@@ -67,6 +67,21 @@ export const projectSkillRelations = relations(projectSkill, ({ one }) => ({
   }),
 }))
 
+// FreelancerSkill -> freelancer y skill
+export const freelancerSkillRelations = relations(
+  freelancerSkill,
+  ({ one }) => ({
+    freelancer: one(freelancerProfile, {
+      fields: [freelancerSkill.freelancerId],
+      references: [freelancerProfile.id],
+    }),
+    skill: one(skill, {
+      fields: [freelancerSkill.skillId],
+      references: [skill.id],
+    }),
+  }),
+)
+
 export const proposalRelations = relations(proposal, ({ one, many }) => ({
   project: one(project, {
     fields: [proposal.projectId],
@@ -139,3 +154,33 @@ export const reviewRelations = relations(review, ({ one }) => ({
     relationName: "reviewee",
   }),
 }))
+
+export const freelancerExperienceRelations = relations(
+  freelancerExperience,
+  ({ one }) => ({
+    freelancer: one(freelancerProfile, {
+      fields: [freelancerExperience.freelancerId],
+      references: [freelancerProfile.id],
+    }),
+  }),
+)
+
+export const freelancerCertificationRelations = relations(
+  freelancerCertification,
+  ({ one }) => ({
+    freelancer: one(freelancerProfile, {
+      fields: [freelancerCertification.freelancerId],
+      references: [freelancerProfile.id],
+    }),
+  }),
+)
+
+export const featuredProjectRelations = relations(
+  featuredProject,
+  ({ one }) => ({
+    freelancer: one(freelancerProfile, {
+      fields: [featuredProject.freelancerId],
+      references: [freelancerProfile.id],
+    }),
+  }),
+)
