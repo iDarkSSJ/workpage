@@ -1,7 +1,5 @@
 import type { Skill } from "./profiles"
-import type { Review } from "./reviews"
 
-// Pivot de skills del proyecto
 export interface ProjectSkillEntry {
   projectId: string
   skillId: string
@@ -23,7 +21,9 @@ export interface Project {
   // relaciones opcionales según el endpoint
   contractor?: {
     id: string
-    user: { name: string; image: string | null }
+    country?: string | null
+    bio?: string | null
+    user: { id: string; name: string; image: string | null }
   }
   skills?: ProjectSkillEntry[]
   proposals?: Proposal[]
@@ -43,7 +43,7 @@ export interface Proposal {
   updatedAt: string
   freelancer?: {
     id: string
-    user: { name: string; image: string | null }
+    user: { id: string; name: string; image: string | null }
   }
 }
 
@@ -62,11 +62,13 @@ export interface Contract {
   project?: Project
   freelancer?: {
     id: string
-    user: { name: string; image: string | null }
+    user: { id: string; name: string; image: string | null }
   }
   contractor?: {
     id: string
-    user: { name: string; image: string | null }
+    country?: string | null
+    bio?: string | null
+    user: { id: string; name: string; image: string | null }
   }
 }
 
@@ -83,7 +85,7 @@ export type CreateProjectInput = {
   budgetType: "fixed" | "hourly"
   budgetMin?: number
   budgetMax?: number
-  skills?: string[] // array de skill IDs
+  skills?: string[] 
 }
 
 export type CreateProposalInput = {

@@ -91,11 +91,12 @@ export interface MyProfiles {
 export type FreelancerProfileInput = {
   bio?: string
   category?: string
-  hourlyRate?: number
+  hourlyRate?: string | number
   country?: string
   linkedinUrl?: string
   githubUrl?: string
   websiteUrl?: string
+  skills?: string[] 
 }
 
 export type ContractorProfileInput = {
@@ -104,3 +105,7 @@ export type ContractorProfileInput = {
   country?: string
   websiteUrl?: string
 }
+
+export type FreelancerExperienceInput = Omit<FreelancerExperience, "id" | "freelancerId">
+export type FreelancerCertificationInput = Omit<FreelancerCertification, "id" | "freelancerId">
+export type FreelancerProjectInput = Omit<FeaturedProject, "id" | "freelancerId" | "createdAt">
