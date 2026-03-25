@@ -16,12 +16,6 @@ export function getProjectProposals(projectId: string) {
 }
 
 // PATCH /api/proposals/:id/status — aceptar/rechazar (contratante) o retirar (freelancer)
-export function updateProposalStatus(
-  id: string,
-  data: UpdateProposalStatusInput,
-) {
-  return api.patch<Proposal | { message: string }>(
-    `/proposals/${id}/status`,
-    data,
-  )
+export function updateProposalStatus(id: string, data: UpdateProposalStatusInput) {
+  return api.patch<Proposal>(`/proposals/${id}/status`, data)
 }

@@ -7,6 +7,6 @@ export function createReview(contractId: string, data: CreateReviewInput) {
 }
 
 // PATCH /api/reviews/:id — editar propia review
-export function updateReview(id: string, data: Partial<CreateReviewInput>) {
+export function updateReview(id: string, data: CreateReviewInput) {
   return api.patch<Review>(`/reviews/${id}`, data)
 }
