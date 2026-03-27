@@ -10,6 +10,8 @@ interface Props {
   path: string
   className?: string
   btnType?: "primary" | "danger" | "secondary" | "default"
+  isExternal?: boolean
+  target?: string
 }
 
 export default function Link({
@@ -18,22 +20,36 @@ export default function Link({
   path,
   className,
   btnType = "default",
+  isExternal = false,
+  target,
 }: Props) {
   const btnClassName =
     "px-2.5 py-2 rounded-2xl font-semibold cursor-pointer transition-colors"
 
+  const combinedClassName = cn(
+    "text-zinc-400",
+    btnStyle && btnClassName,
+    !btnStyle && "hover:underline text-primary",
+    btnType === "primary" && btnStyle && "hover:bg-primary/10 text-primary",
+    btnType === "danger" && btnStyle && "hover:bg-red-400/10 text-danger",
+    btnType === "secondary" && "bg-primary text-white hover:bg-primary/90",
+    className,
+  )
+
+  if (isExternal) {
+    return (
+      <a
+        href={path}
+        target={target}
+        rel="noopener noreferrer"
+        className={combinedClassName}>
+        {children}
+      </a>
+    )
+  }
+
   return (
-    <RRLINK
-      to={path}
-      className={cn(
-        "text-zinc-400",
-        btnStyle && btnClassName,
-        !btnStyle && "hover:underline text-primary",
-        btnType === "primary" && btnStyle && "hover:bg-primary/10 text-primary",
-        btnType === "danger" && btnStyle && "hover:bg-red-400/10 text-danger",
-        btnType === "secondary" && "bg-primary text-white hover:bg-primary/90",
-        className,
-      )}>
+    <RRLINK to={path} className={combinedClassName}>
       {children}
     </RRLINK>
   )

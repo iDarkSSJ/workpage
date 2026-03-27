@@ -12,7 +12,7 @@ export default function Card({ className, children }: Props) {
         "bg-secondary-bg shadow-sm shadow-black/40 w-fit p-4 rounded-3xl px-6 pt-4 pb-4.5",
         className,
       )}>
-      <div>{children}</div>
+      {children}
     </div>
   )
 }
