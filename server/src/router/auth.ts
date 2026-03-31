@@ -48,7 +48,7 @@ authRouter.post(
 
       // 3- if not exists an active request then call better auth.
       const { success } = await auth.api.deleteUser({
-        headers: req.headers as any,
+        headers: fromNodeHeaders(req.headers),
         body: {
           callbackURL: process.env.CLIENT_URL,
         },
@@ -169,7 +169,7 @@ authRouter.post(
       }
 
       const { status } = await auth.api.sendVerificationEmail({
-        headers: req.headers as any,
+        headers: fromNodeHeaders(req.headers),
         body: {
           email: session.user.email,
           callbackURL: process.env.CLIENT_URL,

@@ -4,7 +4,7 @@ import { auth } from "./auth/auth"
 import cors from "cors"
 import authRouter from "./router/auth"
 import apiRouter from "./router/index"
-
+import { errorHandler } from "./middleware/errorHandler"
 const app = express()
 const port = 3000
 
@@ -24,6 +24,8 @@ app.all("/api/auth/*splat", toNodeHandler(auth))
 app.use(express.json())
 
 app.use("/api", apiRouter)
+
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(
