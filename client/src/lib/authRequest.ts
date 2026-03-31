@@ -273,27 +273,3 @@ export const signInReq = async (
     }
   }
 }
-
-type SignOutResult = { success: true } | { success: false; error: string }
-
-export const signOutReq = async (): Promise<SignOutResult> => {
-  try {
-    const { error } = await authClient.signOut()
-
-    if (error) {
-      return {
-        success: false,
-        error: getErrorMessage(error.code),
-      }
-    }
-
-    return { success: true }
-  } catch (err) {
-    console.error(err)
-
-    return {
-      success: false,
-      error: "Surgió un error cerrando sesión.",
-    }
-  }
-}

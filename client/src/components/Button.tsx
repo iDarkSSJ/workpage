@@ -8,7 +8,7 @@ import { cn } from "../utils/cn"
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
-  btnType?: "primary" | "danger" | "secondary" | "default"
+  btnType?: "primary" | "danger" | "secondary" | "default" | "success"
 }
 
 export default function Button({
@@ -26,6 +26,7 @@ export default function Button({
         btnType === "primary" && "text-primary hover:bg-primary/10",
         btnType === "danger" && "text-red-500 hover:bg-red-500/10",
         btnType === "secondary" && "bg-primary text-white hover:bg-primary/90",
+        btnType === "success" && "bg-emerald-500 text-white hover:bg-emerald-600",
         className,
       )}>
       {children}

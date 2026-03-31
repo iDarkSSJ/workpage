@@ -1,20 +1,20 @@
+import { LogOut } from "lucide-react"
 import { authClient } from "../../lib/authClient"
 import Button from "../Button"
 
 export default function LogoutBtn() {
   const signOut = async () => {
-    const { data, error } = await authClient.signOut()
+    const { error } = await authClient.signOut()
 
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(data)
+    if (!error) {
+      window.location.reload()
     }
   }
 
   return (
-    <Button onClick={signOut} btnType="danger">
-      Cerrar Sesión
+    <Button onClick={signOut} btnType="danger" className="flex items-center gap-2">
+      <LogOut size={16} />
+      Salir
     </Button>
   )
 }

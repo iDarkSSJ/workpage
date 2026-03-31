@@ -10,9 +10,17 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.tsx"
 import { LoadingProvider } from "./context/LoadingContext.tsx"
 import AppLoader from "./components/AppLoader.tsx"
 import { AuthProvider } from "./context/AuthContext.tsx"
-import CompleteProfilePage from "./pages/Protected/CompleteProfilePage.tsx"
 import ProtectedLayout from "./pages/Protected/ProtectedLayout.tsx"
 import GuestLayout from "./pages/GuestLayout.tsx"
+import GlobalLayout from "./components/layouts/GlobalLayout.tsx"
+import FreelancerProfilePage from "./pages/FreelancerProfilePage.tsx"
+import ContractorProfilePage from "./pages/ContractorProfilePage.tsx"
+import ProfileSetupPage from "./pages/Protected/ProfileSetupPage.tsx"
+import EditProfilePage from "./pages/Protected/EditProfilePage.tsx"
+import ProjectsPage from "./pages/ProjectsPage.tsx"
+import ProjectDetailPage from "./pages/ProjectDetailPage.tsx"
+import NewProjectPage from "./pages/Protected/NewProjectPage.tsx"
+import MyContractsPage from "./pages/Protected/MyContractsPage.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -24,27 +32,40 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route path="/" element={<App />} />
 
-            <Route element={<GuestLayout />}>
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-            </Route>
+            {/* Rutas compartidas con Navbar Dinámico */}
+            <Route element={<GlobalLayout />}>
+              {/* Rutas públicas de auth */}
+              <Route element={<GuestLayout />}>
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+              </Route>
 
-            <Route element={<ProtectedLayout />}>
+              {/* Rutas públicas de negocio */}
               <Route
-                path="/complete-profile"
-                element={<CompleteProfilePage />}
+                path="/freelancers/:id"
+                element={<FreelancerProfilePage />}
               />
-              <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+              <Route
+                path="/contractors/:id"
+                element={<ContractorProfilePage />}
+              />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectDetailPage />} />
+
+              {/* Rutas protegidas */}
+              <Route element={<ProtectedLayout />}>
+                <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+                <Route path="/profile/setup" element={<ProfileSetupPage />} />
+                <Route
+                  path="/dashboard/edit-profile"
+                  element={<EditProfilePage />}
+                />
+                <Route path="/projects/new" element={<NewProjectPage />} />
+                <Route path="/dashboard/contracts" element={<MyContractsPage />} />
+              </Route>
             </Route>
-            {/* 
-        Layout elements
-        <Route element={<AuthLayout />}>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-        </Route> 
-      */}
           </Routes>
         </BrowserRouter>
       </LoadingProvider>

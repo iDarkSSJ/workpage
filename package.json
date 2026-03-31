@@ -1,0 +1,11 @@
+{
+  "name": "workpage",
+  "version": "1.0.0",
+  "scripts": {
+    "i:all": "npm i && cd client && npm i && cd ../server && npm i",
+    "i:all:pnpm": "pnpm i && cd client && pnpm i && cd ../server && pnpm i"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

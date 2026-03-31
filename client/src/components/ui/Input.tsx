@@ -3,7 +3,7 @@ import { cn } from "../../utils/cn"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string
-  type?: "text" | "password" | "email"
+  type?: "text" | "password" | "email" | "number"
   label: string
   maxLength?: number
   errorMessage?: string
