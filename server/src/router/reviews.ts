@@ -5,7 +5,7 @@ import {
   createReviewSchema,
   updateReviewSchema,
 } from "../schemas/reviews.schema"
-import { createReview, updateReview } from "../controllers/reviews.controller"
+import { createReview, updateReview, deleteReview } from "../controllers/reviews.controller"
 
 const reviewsRouter = Router()
 
@@ -15,11 +15,12 @@ reviewsRouter.post(
   validate(createReviewSchema),
   createReview,
 )
-reviewsRouter.patch(
+reviewsRouter.put(
   "/:id",
   requireAuth,
   validate(updateReviewSchema),
   updateReview,
 )
+reviewsRouter.delete("/:id", requireAuth, deleteReview)
 
 export default reviewsRouter

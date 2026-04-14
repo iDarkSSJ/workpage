@@ -1,4 +1,6 @@
 import express from "express"
+import { createServer } from "http"
+import { initSocket } from "./socket"
 import { toNodeHandler } from "better-auth/node"
 import { auth } from "./auth/auth"
 import cors from "cors"
@@ -10,7 +12,7 @@ const port = 3000
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL || "http://localhost"],
     credentials: true,
   }),
 )
@@ -27,8 +29,10 @@ app.use("/api", apiRouter)
 
 app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(
-    `Express app listening on port: http://localhost:${port}/api/auth/ok`,
-  )
+const server = createServer(app)
+
+initSocket(server)
+
+server.listen(port, () => {
+  console.log(`Express & Socket.io listening on port: http://localhost:${port}`)
 })

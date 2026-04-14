@@ -92,6 +92,7 @@ export const getProjectById = async (id: string, requesterUserId?: string) => {
           with: { user: { columns: { name: true, image: true, id: true } } },
         },
       },
+      orderBy: [desc(schema.proposal.createdAt)],
     })
     proposalCount = proposals.length
   } else {
@@ -101,6 +102,29 @@ export const getProjectById = async (id: string, requesterUserId?: string) => {
       .where(eq(schema.proposal.projectId, id))
 
     proposalCount = result.value
+
+    if (requesterUserId) {
+      const freelancer = await db.query.freelancerProfile.findFirst({
+        where: eq(schema.freelancerProfile.userId, requesterUserId),
+      })
+
+      if (freelancer) {
+        const myProposal = await db.query.proposal.findFirst({
+          where: and(
+            eq(schema.proposal.projectId, id),
+            eq(schema.proposal.freelancerId, freelancer.id),
+          ),
+          with: {
+            freelancer: {
+              with: { user: { columns: { name: true, image: true, id: true } } },
+            },
+          },
+        })
+        if (myProposal) {
+          proposals = [myProposal]
+        }
+      }
+    }
   }
 
   return {

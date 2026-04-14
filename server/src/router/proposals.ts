@@ -9,9 +9,13 @@ import {
   createProposal,
   getProposalsByProjectId,
   updateProposalStatus,
+  getMyProposals,
+  updateProposal,
 } from "../controllers/proposals.controller"
 
 const proposalsRouter = Router()
+
+proposalsRouter.get("/me", requireAuth, getMyProposals)
 
 proposalsRouter.post(
   "/project/:projectId",
@@ -26,6 +30,13 @@ proposalsRouter.patch(
   requireAuth,
   validate(updateProposalStatusSchema),
   updateProposalStatus,
+)
+
+proposalsRouter.put(
+  "/:id",
+  requireAuth,
+  validate(createProposalSchema),
+  updateProposal,
 )
 
 export default proposalsRouter

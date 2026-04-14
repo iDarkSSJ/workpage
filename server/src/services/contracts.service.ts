@@ -20,6 +20,7 @@ export const getMyContracts = async (userId: string) => {
     contractor: {
       with: { user: { columns: { name: true, image: true, id: true } } },
     },
+    reviews: true,
   } as const
 
   let asFreelancer: any[] = []
@@ -83,6 +84,53 @@ export const completeContract = async (userId: string, contractId: string) => {
     await tx
       .update(schema.project)
       .set({ status: "completed" })
+      .where(eq(schema.project.id, contractRecord.projectId))
+
+    return [updated]
+  })
+
+  return updatedContract
+}
+
+export const cancelContract = async (userId: string, contractId: string) => {
+  const contractRecord = await db.query.contract.findFirst({
+    where: eq(schema.contract.id, contractId),
+    with: { contractor: true },
+  })
+
+  if (!contractRecord) {
+    throw new AppError("Contrato no encontrado", 404)
+  }
+
+  if (!contractRecord.contractor) {
+    throw new AppError("Perfil de contratista no encontrado", 404)
+  }
+
+  if (contractRecord.contractor.userId !== userId) {
+    throw new AppError("Solo el contratista puede cancelar el contrato", 403)
+  }
+
+  if (contractRecord.status === "completed") {
+    throw new AppError("No se puede cancelar un contrato que ya está completado", 400)
+  }
+
+  if (contractRecord.status === "cancelled") {
+    throw new AppError("El contrato ya está cancelado", 400)
+  }
+
+  const [updatedContract] = await db.transaction(async (tx) => {
+    const [updated] = await tx
+      .update(schema.contract)
+      .set({
+        status: "cancelled",
+        completedAt: new Date(),
+      })
+      .where(eq(schema.contract.id, contractId))
+      .returning()
+
+    await tx
+      .update(schema.project)
+      .set({ status: "closed" })
       .where(eq(schema.project.id, contractRecord.projectId))
 
     return [updated]

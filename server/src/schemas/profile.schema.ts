@@ -16,7 +16,7 @@ const optionalString = (max: number) =>
     .nullable()
     .transform((val) => (val === "" ? null : val))
 const optionalUrl = z
-  .url("Debe ser una URL válida")
+  .union([z.url("Debe ser una URL válida"), z.literal("")])
   .optional()
   .nullable()
   .transform((val) => (val === "" ? null : val))
@@ -40,24 +40,44 @@ export const freelancerSchema = z.object({
   skills: z.array(z.uuid()).max(15, "Máximo 15 habilidades").optional(),
 })
 
-export const experienceSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(1, "Obligatorio")
-    .max(100, "Máximo 100 caracteres"),
-  company: z
-    .string()
-    .trim()
-    .min(1, "Obligatorio")
-    .max(100, "Máximo 100 caracteres"),
-  description: optionalString(1000),
-  startDate: z.coerce.date(),
-  endDate: z.coerce
-    .date()
-    .max(new Date(), "No mayor a la fecha actual")
-    .optional(),
-})
+export const experienceSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(1, "Obligatorio")
+      .max(100, "Máximo 100 caracteres"),
+    company: z
+      .string()
+      .trim()
+      .min(1, "Obligatorio")
+      .max(100, "Máximo 100 caracteres"),
+    description: optionalString(1000),
+    startDate: z.coerce
+      .date("Fecha inválida")
+      .max(new Date(), "No mayor a la fecha actual"),
+    endDate: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.coerce.date("Fecha inválida").nullable().optional(),
+    ),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.endDate) return
+
+    if (data.endDate > new Date()) {
+      ctx.addIssue({
+        code: "custom",
+        message: "La fecha de fin no puede ser en el futuro",
+        path: ["endDate"],
+      })
+    } else if (data.startDate > data.endDate) {
+      ctx.addIssue({
+        code: "custom",
+        message: "La fecha de inicio no puede ser posterior a la de fin",
+        path: ["startDate"],
+      })
+    }
+  })
 
 export const certificationSchema = z.object({
   name: z

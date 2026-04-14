@@ -7,7 +7,7 @@ export const createProposalSchema = z.object({
 })
 
 export const updateProposalStatusSchema = z.object({
-  status: z.enum(["accepted", "rejected", "withdrawn"]),
+  status: z.enum(["accepted", "rejected", "withdrawn", "pending"]),
 })
 
 export type CreateProposalData = z.infer<typeof createProposalSchema>

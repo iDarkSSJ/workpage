@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm"
 import * as authSchema from "../database/auth-schema"
 import express from "express"
 import { requireAuth } from "../middleware/requireAuth"
+import crypto from "crypto"
 
 const authRouter = Router()
 
@@ -30,20 +31,24 @@ authRouter.post(
 
       const user = session.user
 
-      // 2 - Verify if exits an active request - jose
+      // 2 - Verify if exists an active request - jose
+      // Check for the latest record created in the last 5 minutes
       const existing = await db.query.verification.findFirst({
-        where: (v, { and, eq, like, gt }) =>
-          and(
-            eq(v.value, user.id),
-            like(v.identifier, "delete-account-%"),
-            gt(v.expiresAt, new Date()),
-          ),
+        where: (v, { and, eq, like }) =>
+          and(eq(v.value, user.id), like(v.identifier, "delete-account-%")),
+        orderBy: (v, { desc }) => [desc(v.createdAt)],
       })
 
       if (existing) {
-        return res.status(400).json({
-          error: "Ya existe una solicitud de eliminación activa",
-        })
+        const diff = Date.now() - existing.createdAt.getTime()
+        const fiveMinutes = 5 * 60 * 1000
+
+        if (diff < fiveMinutes) {
+          const minutesLeft = Math.ceil((fiveMinutes - diff) / 60000)
+          return res.status(400).json({
+            error: `Ya existe una solicitud activa. Espera ${minutesLeft} minuto(s).`,
+          })
+        }
       }
 
       // 3- if not exists an active request then call better auth.
@@ -106,12 +111,12 @@ authRouter.post(
         })
       }
 
-      const { rowCount } = await db
+      const dbResult = await db
         .update(authSchema.user)
         .set({ role })
         .where(eq(authSchema.user.id, req.session!.user.id))
 
-      if (rowCount < 1) {
+      if ((dbResult?.rowCount ?? 0) < 1) {
         return res.status(500).json({
           error: "Error interno del servidor",
         })
@@ -139,21 +144,23 @@ authRouter.post(
       const identifier = `verify-email-${session.user.id}`
 
       const existing = await db.query.verification.findFirst({
-        where: (v, { and, eq, gt }) =>
-          and(eq(v.identifier, identifier), gt(v.expiresAt, new Date())),
+        where: (v, { and, eq }) => and(eq(v.identifier, identifier)),
+        orderBy: (v, { desc }) => [desc(v.createdAt)],
       })
 
       if (existing) {
-        const minutesLeft = Math.ceil(
-          (existing.expiresAt.getTime() - Date.now()) / 1000 / 60,
-        )
+        const diff = Date.now() - existing.createdAt.getTime()
+        const fiveMinutes = 5 * 60 * 1000
 
-        return res.status(400).json({
-          error: `Espera ${minutesLeft} minuto(s) antes de reenviar.`,
-        })
+        if (diff < fiveMinutes) {
+          const minutesLeft = Math.ceil((fiveMinutes - diff) / 60000)
+          return res.status(400).json({
+            error: `Espera ${minutesLeft} minuto(s) antes de reenviar el enlace de verificación.`,
+          })
+        }
       }
 
-      const { rowCount } = await db.insert(authSchema.verification).values({
+      const result = await db.insert(authSchema.verification).values({
         id: crypto.randomUUID(),
         identifier,
         value: session.user.email,
@@ -162,7 +169,7 @@ authRouter.post(
         updatedAt: new Date(),
       })
 
-      if (rowCount < 1) {
+      if ((result?.rowCount ?? 0) < 1) {
         return res.status(500).json({
           error: "Error interno del servidor",
         })
@@ -185,6 +192,63 @@ authRouter.post(
       return res.json({ success: true })
     } catch (err) {
       console.error("Request verifying error:", err)
+      return res.status(500).json({ error: "Error interno del servidor" })
+    }
+  },
+)
+
+authRouter.post(
+  "/request-password-reset",
+  express.json(),
+  async (req: Request, res: Response<ApiResponse>) => {
+    try {
+      const { email } = req.body
+      if (!email) return res.status(400).json({ error: "Email requerido" })
+
+      // 1. Find the user first to get their ID for the cooldown check
+      const user = await db.query.user.findFirst({
+        where: eq(authSchema.user.email, email),
+      })
+
+      if (!user) {
+        return res.json({ success: true })
+      }
+
+      const existing = await db.query.verification.findFirst({
+        where: (v, { and, eq, like }) =>
+          and(eq(v.value, user.id), like(v.identifier, "reset-password:%")),
+        orderBy: (v, { desc }) => [desc(v.createdAt)],
+      })
+
+      if (existing) {
+        const diff = Date.now() - existing.createdAt.getTime()
+        const fiveMinutes = 5 * 60 * 1000
+
+        if (diff < fiveMinutes) {
+          const minutesLeft = Math.ceil((fiveMinutes - diff) / 60000)
+          return res.status(400).json({
+            error: `Espera ${minutesLeft} minuto(s) antes de reenviar el enlace de restauración.`,
+          })
+        }
+      }
+
+      const { status } = await auth.api.requestPasswordReset({
+        headers: fromNodeHeaders(req.headers),
+        body: {
+          email,
+          redirectTo: `${process.env.CLIENT_URL}/reset-password`,
+        },
+      })
+
+      if (!status) {
+        return res
+          .status(500)
+          .json({ error: "Error al solicitar restauración" })
+      }
+
+      return res.json({ success: true })
+    } catch (err) {
+      console.error("Request password reset error:", err)
       return res.status(500).json({ error: "Error interno del servidor" })
     }
   },

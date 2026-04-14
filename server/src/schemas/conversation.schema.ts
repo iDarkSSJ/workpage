@@ -6,7 +6,7 @@ export const createConversationSchema = z.object({
 })
 
 export const sendMessageSchema = z.object({
-  content: z.string().trim().min(1),
+  content: z.string().trim().min(1).max(5000),
 })
 
 export const queryMessagesSchema = z.object({

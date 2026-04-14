@@ -97,3 +97,21 @@ export const updateReview = async (
 
   return updated
 }
+
+export const deleteReview = async (userId: string, reviewId: string) => {
+  const existing = await db.query.review.findFirst({
+    where: eq(schema.review.id, reviewId),
+  })
+
+  if (!existing) {
+    throw new AppError("Review no encontrada", 404)
+  }
+
+  if (existing.reviewerId !== userId) {
+    throw new AppError("Solo puedes eliminar tus propias reseñas", 403)
+  }
+
+  await db.delete(schema.review).where(eq(schema.review.id, reviewId))
+
+  return { success: true }
+}

@@ -5,7 +5,12 @@ import VerifyAccountEmail from "./emailComponents/VerifyAccountEmail"
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
-export const sendVerificationEmail = async ({ user, verifyUrl }) => {
+interface VerificationParams {
+  user: { name: string; email: string };
+  verifyUrl: string;
+}
+
+export const sendVerificationEmail = async ({ user, verifyUrl }: VerificationParams) => {
   const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: user.email,
@@ -18,7 +23,12 @@ export const sendVerificationEmail = async ({ user, verifyUrl }) => {
   }
 }
 
-export const sendResetPasswordEmail = async ({ userEmail, resetUrl }) => {
+interface ResetParams {
+  userEmail: string;
+  resetUrl: string;
+}
+
+export const sendResetPasswordEmail = async ({ userEmail, resetUrl }: ResetParams) => {
   const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: userEmail,
@@ -31,12 +41,18 @@ export const sendResetPasswordEmail = async ({ userEmail, resetUrl }) => {
   }
 }
 
+interface DeleteParams {
+  userEmail: string;
+  userName: string;
+  confirmUrl: string;
+}
+
 // Send Delete Account Verification Email
 export const sendDeleteAccVerEmail = async ({
   userEmail,
   userName,
   confirmUrl,
-}) => {
+}: DeleteParams) => {
   const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: userEmail,

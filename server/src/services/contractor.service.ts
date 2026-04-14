@@ -1,6 +1,6 @@
 import { db } from "../database/database"
 import * as schema from "../database/schema"
-import { eq, and } from "drizzle-orm"
+import { eq, and, count, asc, desc } from "drizzle-orm"
 import crypto from "crypto"
 import { ContractorProfileData } from "../schemas/profile.schema"
 import { AppError } from "../utils/AppError"
@@ -79,15 +79,28 @@ export const getContractorProjects = async (
   orderBy: "createdAt" | "updatedAt" = "createdAt",
   order: "asc" | "desc" = "desc",
 ) => {
-  const projects = await db.query.project.findMany({
-    where: and(
-      eq(schema.project.contractorId, contractorId),
-      status ? eq(schema.project.status, status) : undefined,
-    ),
-    orderBy: (project, { asc, desc }) => [
-      order === "desc" ? desc(project[orderBy]) : asc(project[orderBy]),
-    ],
-  })
+  const results = await db
+    .select({
+      project: schema.project,
+      proposalCount: count(schema.proposal.id),
+    })
+    .from(schema.project)
+    .leftJoin(schema.proposal, eq(schema.project.id, schema.proposal.projectId))
+    .where(
+      and(
+        eq(schema.project.contractorId, contractorId),
+        status ? eq(schema.project.status, status) : undefined,
+      ),
+    )
+    .groupBy(schema.project.id)
+    .orderBy(
+      order === "desc"
+        ? desc(schema.project[orderBy])
+        : asc(schema.project[orderBy]),
+    )
 
-  return projects
+  return results.map((r) => ({
+    ...r.project,
+    proposalCount: r.proposalCount,
+  }))
 }

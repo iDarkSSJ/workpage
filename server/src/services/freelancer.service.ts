@@ -50,7 +50,7 @@ export const getFreelancerProfileById = async (id: string) => {
 
 export const createFreelancerProfile = async (
   userId: string,
-  data: FreelancerProfileData,
+  data: Partial<FreelancerProfileData>,
 ) => {
   const existing = await db.query.freelancerProfile.findFirst({
     where: eq(schema.freelancerProfile.userId, userId),

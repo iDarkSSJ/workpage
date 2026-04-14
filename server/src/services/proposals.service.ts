@@ -1,11 +1,15 @@
 import { db } from "../database/database"
 import * as schema from "../database/schema"
-import { eq, and } from "drizzle-orm"
+import { eq, and, desc } from "drizzle-orm"
 import crypto from "crypto"
 import { AppError } from "../utils/AppError"
 import { CreateProposalData } from "../schemas/proposals.schema"
 
-export const createProposal = async (userId: string, projectId: string, data: CreateProposalData) => {
+export const createProposal = async (
+  userId: string,
+  projectId: string,
+  data: CreateProposalData,
+) => {
   const freelancer = await db.query.freelancerProfile.findFirst({
     where: eq(schema.freelancerProfile.userId, userId),
   })
@@ -29,7 +33,7 @@ export const createProposal = async (userId: string, projectId: string, data: Cr
   const existing = await db.query.proposal.findFirst({
     where: and(
       eq(schema.proposal.projectId, projectId),
-      eq(schema.proposal.freelancerId, freelancer.id)
+      eq(schema.proposal.freelancerId, freelancer.id),
     ),
   })
 
@@ -53,7 +57,10 @@ export const createProposal = async (userId: string, projectId: string, data: Cr
   return newProposal
 }
 
-export const getProposalsByProjectId = async (userId: string, projectId: string) => {
+export const getProposalsByProjectId = async (
+  userId: string,
+  projectId: string,
+) => {
   const project = await db.query.project.findFirst({
     where: eq(schema.project.id, projectId),
     with: { contractor: true },
@@ -64,7 +71,10 @@ export const getProposalsByProjectId = async (userId: string, projectId: string)
   }
 
   if (project.contractor.userId !== userId) {
-    throw new AppError("No tienes permiso para ver las propuestas de este proyecto", 403)
+    throw new AppError(
+      "No tienes permiso para ver las propuestas de este proyecto",
+      403,
+    )
   }
 
   const proposals = await db.query.proposal.findMany({
@@ -79,7 +89,11 @@ export const getProposalsByProjectId = async (userId: string, projectId: string)
   return proposals
 }
 
-export const updateProposalStatus = async (userId: string, proposalId: string, status: string) => {
+export const updateProposalStatus = async (
+  userId: string,
+  proposalId: string,
+  status: string,
+) => {
   const proposal = await db.query.proposal.findFirst({
     where: eq(schema.proposal.id, proposalId),
   })
@@ -108,14 +122,59 @@ export const updateProposalStatus = async (userId: string, proposalId: string, s
   const isContractor = project.contractor.userId === userId
   const isFreelancer = freelancer.userId === userId
 
-  if (status === "withdrawn") {
-    if (!isFreelancer) {
-      throw new AppError("Solo el freelancer puede retirar la propuesta", 403)
-    }
-  } else {
-    if (!isContractor) {
-      throw new AppError("Solo el contratista del proyecto puede aceptar o rechazar propuestas", 403)
-    }
+  type ProposalStatus = "withdrawn" | "pending" | "accepted" | "rejected"
+
+  interface TransitionRule {
+    hasPermission: boolean
+    permissionError: string
+    requiredCurrentState: ProposalStatus
+    stateError: string
+  }
+  
+  const transitionRules: Record<ProposalStatus, TransitionRule> = {
+    withdrawn: {
+      hasPermission: isFreelancer,
+      permissionError: "Solo el freelancer puede retirar la propuesta",
+      requiredCurrentState: "pending",
+      stateError: "Solo se pueden retirar propuestas pendientes",
+    },
+    pending: {
+      hasPermission: isFreelancer,
+      permissionError: "Solo el freelancer puede re-abrir la propuesta",
+      requiredCurrentState: "withdrawn",
+      stateError: "Solo se pueden re-abrir propuestas que fueron retiradas",
+    },
+    accepted: {
+      hasPermission: isContractor,
+      permissionError:
+        "Solo el contratista del proyecto puede aceptar propuestas",
+      requiredCurrentState: "pending",
+      stateError: `No se puede aceptar una propuesta que no esté pendiente (Estado actual: ${proposal.status})`,
+    },
+    rejected: {
+      hasPermission: isContractor,
+      permissionError:
+        "Solo el contratista del proyecto puede rechazar propuestas",
+      requiredCurrentState: "pending",
+      stateError: `No se puede rechazar una propuesta que no esté pendiente (Estado actual: ${proposal.status})`,
+    },
+  }
+
+  const rule = transitionRules[status as ProposalStatus]
+
+  if (!rule) {
+    throw new AppError(
+      `Transición al estado '${status}' no válida o no soportada`,
+      400,
+    )
+  }
+
+  if (!rule.hasPermission) {
+    throw new AppError(rule.permissionError, 403)
+  }
+
+  if (proposal.status !== rule.requiredCurrentState) {
+    throw new AppError(rule.stateError, 400)
   }
 
   // si se acepta la propuesta, se crea un contrato y se cambia el estado del proyecto a "in_progress"
@@ -142,7 +201,9 @@ export const updateProposalStatus = async (userId: string, proposalId: string, s
       })
     })
 
-    return { message: "Propuesta aceptada, proyecto en progreso y contrato creado." }
+    return {
+      message: "Propuesta aceptada, proyecto en progreso y contrato creado.",
+    }
   }
 
   const [updated] = await db
@@ -152,4 +213,71 @@ export const updateProposalStatus = async (userId: string, proposalId: string, s
     .returning()
 
   return updated
+}
+
+export const updateProposal = async (
+  userId: string,
+  proposalId: string,
+  data: CreateProposalData,
+) => {
+  const proposal = await db.query.proposal.findFirst({
+    where: eq(schema.proposal.id, proposalId),
+    with: {
+      freelancer: true,
+    },
+  })
+
+  if (!proposal) {
+    throw new AppError("Propuesta no encontrada", 404)
+  }
+
+  if (proposal.freelancer.userId !== userId) {
+    throw new AppError("Solo el dueño de la propuesta puede editarla", 403)
+  }
+
+  if (proposal.status !== "pending" && proposal.status !== "withdrawn") {
+    throw new AppError(
+      "Solo puedes editar una propuesta si está pendiente o retirada",
+      400,
+    )
+  }
+
+  const [updated] = await db
+    .update(schema.proposal)
+    .set({
+      coverLetter: data.coverLetter,
+      bidAmount: data.bidAmount,
+      bidType: data.bidType,
+      updatedAt: new Date(),
+    })
+    .where(eq(schema.proposal.id, proposalId))
+    .returning()
+
+  return updated
+}
+
+export const getMyProposals = async (userId: string) => {
+  const freelancer = await db.query.freelancerProfile.findFirst({
+    where: eq(schema.freelancerProfile.userId, userId),
+  })
+
+  if (!freelancer) {
+    throw new AppError("Perfil de freelancer no encontrado", 404)
+  }
+
+  const proposals = await db.query.proposal.findMany({
+    where: eq(schema.proposal.freelancerId, freelancer.id),
+    with: {
+      project: {
+        with: {
+          contractor: {
+            with: { user: { columns: { name: true, image: true } } },
+          },
+        },
+      },
+    },
+    orderBy: [desc(schema.proposal.createdAt)],
+  })
+
+  return proposals
 }

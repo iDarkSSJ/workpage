@@ -7,6 +7,7 @@ import {
   CreateConversationData,
   SendMessageData,
 } from "../schemas/conversation.schema"
+import { getIO } from "../socket"
 
 export const getConversations = async (userId: string) => {
   return db.query.conversation.findMany({
@@ -155,6 +156,10 @@ export const sendMessage = async (
 
     return [insertedMsg]
   })
+
+  // Emitir evento webSocket a la sala de esta conversación
+  const io = getIO()
+  io.to(`conversation_${conversation.id}`).emit("new_message", newMessage)
 
   return newMessage
 }

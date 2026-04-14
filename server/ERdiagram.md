@@ -1,13 +1,23 @@
-Diagrama entidad relación
-2/feb — tablas auth [user, account, session, verification] creadas por Better Auth
-24/feb — campo "role" añadido a tabla "user"
-02/mar — tablas de negocio añadidas
-03/mar — campo "reviewee_role" añadido a tabla "review"
+# Diagrama Entidad-Relación
 
-[mermaidJS](https://mermaid.live/edit#pako:eNq1WP1O6zYUfxUr0pVAKqjlq9D_uhKm7kKL2nI3TUiRG5vWkMSR7ZR2gLSH2GvsKfYme5Idp02apA5NB1RCJD4-x-f8zqfzYrmcUKtlUXHJ8ERg_z64DxD87ob2AL0sn_VP0blCjKDb74W1APu0sER9zLz12phzj-JguezMqGAPjJKiaB9PinIE8GWWmE-lwn6IXEGxosTBykSNQpKjviUmtTud_l1vVMkq7Lo8CpTDinqGgs8YoWKTEsl4FV0ZZFEpHcWfaFC0kD4IKqdGGiMby6mNWZEOnYcMpJTAkTvCvFefJl0eFvEPsZTPXJBP9MHQHg67_d5WH6SSShUuxWY3zdYahA4mBI6SJr9CcAZqi8NTI3_Yg-5Vt9MeVbF0uQbSdVaIAmGGvYhWhuXDzvnevb7-v0nvgswJF4uCzKuBbV-3ex174NwO-lfda7vSAaXJNGb83YP1L4h8KDIumvJIeAtHwIYij07uLEu86rHgiRIWOMBWIE2YmkZjA-GZjiVTtED5qCc6_d5o0O6M-p-Emsv9EAcLx-A3A6BGcL7G0Ex42L_dQt7Y8FzJVqhq1MOBW2KxYsqjZhQKq4RKV7BQMZ4pJ1pdBLoL5ZBc-MQEGpDMsskY-BvtVgO22GPwHAskWBkZFGdSRpQUNF9GSOK9tdJ2e3Q3sC91oP1id0ZfBb4R5nXrN6QWtNpH6qqqEZdatIshLodQx67in2HIOCITqhy1yHbSpBitiD4Lyml4XuzKCqtIfmK-ATa3_WG7WpVPHGBCZksEuBzmPMejSmV7WmovzDbY12VmoxiRAnxfA0NSX6vCEHKJPaOh72G0JbjKIUxwgomc0hKoyjGJy1YpJroIgl9MqAzsH137153yxmiYoDNGn0siY0Wk7xPzo3-CB3RyFkw2q7qfH862lwjwPwxpw-rV-T03hwA3cxm0FuXgrTvGGzs-Gsw3MFO3f7ar-g0SU2JdvYyqSuhtpTkdqBzQycWOSQc0Jzt54Ns31I7UNHPZfH09OOAv6S2the6tRqt3b21uSS4RmS2p0FsqHphHJdprtBqIhy4Yij30759_oSiIByQUQm-kYFIAz9gfc7lfPOLVNLbq0xQDLrSXiN3f1O7VNLuVsaZaD5-Y50nUa92kS9dYIoXHHvwL2YznyoXU29EijcrlO50zCVbBdII8jC5_SkWFVHAUcPAt8iNwjACfQdZwpG8dBJMYnTceY6vPEzSEuwUQMfTm0Pvnb5eBM-Gdls70K-7lDUKbW9Q2QSppzhsMOVvy4ETjg5Wm4FdCvQwUpQqtQsU8X6b-SLSqJCA_0-0iozhi5XhTO6-86JGDT1mgS4UHlqIAbjZuMqAbAmt1QFZuGI095uIi3uudy_6vtwrqsnEF_XNMU-zSjPAloRD68caJTrBUj5S0krnqNfmNKRSdKVZoD0JO4kfwOQ1mDBMOmcBFnGs1JFmgg5MLaHZIRvpbEYJ-BJmyv1kwcuU-BikpyBn11jtWXEld3fB0iik3S48L5VzxXLZbNWsiGLFaSkS0ZkFD87F-teKyDSdMKUz4luYn9AFHntLHvQEbtI3fOfcTTsGjydRqPWBPwtuyK6w-3qVb4iLe0VOD1TqqN2MZVuvFmlut47PTw-Pm2VH99KJx3DivX9SshdU6aR6enh2d1uvN5vlJ_aJ5-laz_ogPrR-eN2G9Xm-cHB_Vj85PTmoWXJJhqLlZfjqMvyC-_QfcXDWS)
+> **Historial de cambios:**
+>
+> - `02/feb` — Tablas auth `[user, account, session, verification]` creadas por Better Auth
+> - `24/feb` — Campo `role` añadido a tabla `user`
+> - `02/mar` — Tablas de negocio añadidas
+> - `03/mar` — Campo `reviewee_role` añadido a tabla `review`
+> - `13/abr` — Tablas `freelancer_skill` y `project_skill` añadidas explícitamente al diagrama
+
+---
+
+[ER Diagram](https://mermaid.live/edit#pako:eNrVGe1O20jwVVaWKoEEiBQfgfxLXYemDXGUhN7phGRt7CXZYnt93nWAA6Q-RJ-wT3KzTuzYzpqYAro0AsmZ2Zmd7w_nXnOYS7SWRqKPFE8j7F8GlwGCz7t36OeP7__XXyZD-2L8Ce2cES4oC7DLUMgi9IEIQSLUjsVsdzukXUhxMTKH6H7xLD-C3ApEXTT4UoIF2CclEPEx9VawCWMewcECbM9JRK8occusfTwt84mALgeiPpgO-yFyIoIFcW0sVNg4dAvYx1SltmFYF_1xLa2w47A4EDYtyxlGbE5dEq1jYp5AUUfBi3BuC3ZNgrKG5CoifKbEUXcNnOmYZ2mT25AClwpzFK5Qn5W3cYeFZfuHmPMbFrmv6IORORp1rf5GH2ScKgWutM3zJFtJENrYdeEqrvIrBGcgNjg8U_KrOex2ukZ7XEfTBQy4y6yISog59mJS2ywvdc6W1MmBOex0e-Zom8phZ2iavXbfMIf2YGhJ8Wo5trImTCgrQRzwyZRFdytwEPtQKx00Y3Hk3dkRHCjTyBqVJ0mgHg2uiUsDG8hKqCkVs3iiQNyQCaeClDAvDSjD6o-HbWNsvZLVHOaHOLizFT1HYVClcd5G0dGXbq_3q-2y6PlHRcip2UNdJx4OnApj8Wvqecr6BL74bBrjCrbQ4b4RRzyTZ05a8y_I4K4Jz7UsskENQYVH1HFQgrqEOxEN5XS1wkiHIfBeJGy3kEAJggRuDqxSBv7HzyvmG_RRBAANYCQUsUJwynlM3JLkixxJ41cl9MAajjtWr2u9lQOUpl7NcYoCk0ZVzbzbtp7U6V18tiBxun2jO2j30EcT9c0zy-ha29Slloldy-sOg-qIHcFew-uT2J0SYYu7_AyZ9q8l0qdBNQ7fliuNwCLmr1iiwTYDa9SuV6WfqoEb0sVhsOHYXrLWKfSFqR77sjOt9S-3ZL63MUPakuuaIWQce0pFn7LRhuCqNmFqJ9jfCakwVbVNkjpfaRPZNcAvKqsMza9d889n5Y1SsYjMKbmpiIwlkjyNLC69qT1g-KPBdL0N-sW15Lepp8an9nibKiekBWxto_pd_qnoDyEKqUNhRBE23nhisnbipTl-Dkt2-8ysG85QrziWRV098sGMVFnqAlGIv_RND-U2SO7-joE5hBkKunp_u9ZP-fYwFrPcq7mHh_19dp-902qhS63R6l9q60fSVy65I6tVm0RX1CMc7TRaDcRCR76Z9NDP7z9QHCR7GAphACXg7wCesT9hfLd8xYNqO5a3CQpUaCdlu7su3YNqRawizaQeyS2Eo37rHO3MKUYCTzzMUUjnTOxW7utLc6ytVdl1qXgL8FPHwWAR-SeGyuxi2CFSwnT8WpIW1yxJJ4koidQ3rR-Ha2KOsytW-seTffnCyMUwkcFU5uUa6jPUz-1pazaoxaC4G_0aj9WqUqBfDd5e_I1BtaWBLJceaIsC2JaddN1XxE_RngnfMJ541MHVjlqMhgsfOXRSQ4cC0Qw7JMd8gShFeHJwKvMIJ-mWpUN2YMl5OYysjhcMYszS0plP8kL_SjROO4ycEhhqqyrDJqIPOQlXB5fEaZNZc3tmXKa-JOkat4IVslvb06aQTVpLRDHZ02Do8bH8qiU9DG6YEVibNUnvkisce0Je9whk0EP_ZsxPKSMWT2da6wp7HL4tWuTy56DsSNLRDDlZai39_WHCQ2vda7daa_-kedDUG4enR039-PSw-ceedgdQ_VA_aDbeH-mN06NTgOuPe9q_ya2NA715rOsnjePDhn5yfKIf7WnEpTD5ni9-jUp-lHr8D7KQsRo)
 
 ```mermaid
 erDiagram
+
+    %% ─────────────────────────────────────────
+    %% AUTH (Gestionado por Better Auth)
+    %% ─────────────────────────────────────────
 
     USER {
         text id PK
@@ -56,11 +66,9 @@ erDiagram
         timestamp updated_at
     }
 
-    SKILL {
-        text id PK
-        text name
-        text category
-    }
+    %% ─────────────────────────────────────────
+    %% PERFILES
+    %% ─────────────────────────────────────────
 
     FREELANCER_PROFILE {
         text id PK
@@ -87,6 +95,22 @@ erDiagram
         timestamp updated_at
     }
 
+    SKILL {
+        text id PK
+        text name
+        text category
+    }
+
+    FREELANCER_SKILL {
+        text freelancer_id FK
+        text skill_id FK
+    }
+
+    PROJECT_SKILL {
+        text project_id FK
+        text skill_id FK
+    }
+
     FREELANCER_EXPERIENCE {
         text id PK
         text freelancer_id FK
@@ -106,7 +130,7 @@ erDiagram
         text url
     }
 
-    FEATURED_PROJECT {
+    FREELANCER_PORTFOLIO {
         text id PK
         text freelancer_id FK
         text title
@@ -115,6 +139,10 @@ erDiagram
         text project_url
         timestamp created_at
     }
+
+    %% ─────────────────────────────────────────
+    %% FLUJO PRINCIPAL DE NEGOCIO
+    %% ─────────────────────────────────────────
 
     PROJECT {
         text id PK
@@ -164,6 +192,10 @@ erDiagram
         timestamp created_at
     }
 
+    %% ─────────────────────────────────────────
+    %% CHAT
+    %% ─────────────────────────────────────────
+
     CONVERSATION {
         text id PK
         text project_id FK
@@ -182,6 +214,10 @@ erDiagram
         timestamp created_at
     }
 
+    %% ─────────────────────────────────────────
+    %% RELACIONES
+    %% ─────────────────────────────────────────
+
     %% Auth
     USER ||--o{ ACCOUNT : "1:N"
     USER ||--o{ SESSION : "1:N"
@@ -190,26 +226,27 @@ erDiagram
     USER ||--o| FREELANCER_PROFILE : "tiene (opcional)"
     USER ||--o| CONTRACTOR_PROFILE : "tiene (opcional)"
 
-    %% Skills N:M
-    %% Las tablas pivot freelancer_skill y project_skill existen en la DB
-    %% pero no se muestran como entidad — }o--o{ las representa implícitamente
-    FREELANCER_PROFILE }o--o{ SKILL : "freelancer_skill"
-    PROJECT }o--o{ SKILL : "project_skill"
+    %% Skills N:M (via tablas pivot)
+    FREELANCER_PROFILE ||--o{ FREELANCER_SKILL : "tiene"
+    SKILL ||--o{ FREELANCER_SKILL : "es requerida en"
+    PROJECT ||--o{ PROJECT_SKILL : "requiere"
+    SKILL ||--o{ PROJECT_SKILL : "es usada en"
 
     %% Sub-entidades del freelancer
     FREELANCER_PROFILE ||--o{ FREELANCER_EXPERIENCE : "tiene"
     FREELANCER_PROFILE ||--o{ FREELANCER_CERTIFICATION : "tiene"
-    FREELANCER_PROFILE ||--o{ FEATURED_PROJECT : "tiene"
+    FREELANCER_PROFILE ||--o{ FREELANCER_PORTFOLIO : "tiene"
 
     %% Flujo principal de negocio
     CONTRACTOR_PROFILE ||--o{ PROJECT : "publica"
     PROJECT ||--o{ PROPOSAL : "recibe"
     FREELANCER_PROFILE ||--o{ PROPOSAL : "hace"
-    PROPOSAL ||--o| CONTRACT : "genera"
+    PROPOSAL ||--o| CONTRACT : "genera (1:1)"
     CONTRACT ||--o{ REVIEW : "genera"
 
-    %% Chat (mensajes enviados por USER, sin importar su rol activo)
-    USER ||--o{ CONVERSATION : "participa"
+    %% Chat
+    USER ||--o{ CONVERSATION : "participa como A"
+    USER ||--o{ CONVERSATION : "participa como B"
     CONVERSATION ||--o{ MESSAGE : "tiene"
     PROJECT |o--o{ CONVERSATION : "contexto (opcional)"
 ```
