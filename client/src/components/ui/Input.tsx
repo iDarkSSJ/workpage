@@ -1,84 +1,71 @@
 import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
 import { cn } from "../../utils/cn"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string
-  type?: "text" | "password" | "email" | "number"
   label: string
-  maxLength?: number
   errorMessage?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function Input({
-  className,
-  type = "text",
   label,
-  maxLength,
-  errorMessage = "",
-  onChange,
-  ...rest
+  errorMessage,
+  className,
+  id,
+  type,
+  ...props
 }: InputProps) {
-  const [remaining, setRemaining] = useState(maxLength)
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valueLength = e.target.value.length
-    if (maxLength !== undefined) {
-      setRemaining(maxLength - valueLength)
-    }
-    if (onChange) onChange(e)
-  }
+  const [showPassword, setShowPassword] = useState(false)
+  const isPassword = type === "password"
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type
+  const inputId = id || props.name || "input-gen"
 
   return (
-    <label className="transition-colors font-semibold mt-4">
+    <div className="flex flex-col mt-4 font-semibold">
       <div className="relative">
         <input
-          onChange={handleChange}
-          maxLength={maxLength}
-          type={type}
-          placeholder=""
-          {...rest}
+          id={inputId}
+          placeholder=" "
+          type={inputType}
+          {...props}
           className={cn(
-            "peer bg-secondary-bg rounded-xl h-12 outline-none border border-zinc-500 hover:border-primary focus:ring focus:ring-primary py-3 px-4.5",
+            "peer bg-secondary-bg rounded-xl h-12 w-full outline-none border border-zinc-500 hover:border-primary focus:ring focus:ring-primary/50 py-3 px-4 transition-colors",
             errorMessage &&
-              "border-danger hover:border-danger focus:ring-danger",
+              "border-danger hover:border-danger focus:ring-danger/50",
             className,
           )}
         />
 
-        <span
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-primary transition-colors cursor-pointer"
+            aria-label={
+              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+            }>
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        )}
+
+        <label
+          htmlFor={inputId}
           className={cn(
-            `
-          pointer-events-none
-          absolute left-4
-          top-2/4
-          -translate-y-1/2
-          origin-left
-        bg-secondary-bg px-2
-        text-zinc-400
-          transition-all duration-200
-
-          peer-focus:-translate-y-10
-          peer-focus:scale-75
-        peer-focus:text-primary
-        peer-hover:text-primary
-
-          peer-not-placeholder-shown:-translate-y-10
-          peer-not-placeholder-shown:scale-75`,
+            `pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 origin-left bg-secondary-bg px-2 text-zinc-400 transition-all duration-200 peer-focus:whitespace-nowrap
+            text-xs md:text-base
+             peer-focus:-translate-y-9 peer-focus:scale-75 peer-focus:text-primary peer-hover:text-primary
+             peer-not-placeholder-shown:-translate-y-9 peer-not-placeholder-shown:scale-75 rounded-xl`,
             errorMessage &&
               "peer-focus:text-danger peer-hover:text-danger text-danger",
+            isPassword && "pr-10",
           )}>
           {label}
-        </span>
-
-        {maxLength && (
-          <span className="absolute right-4 -bottom-2 text-xs text-gray-400 bg-secondary-bg px-1">
-            {remaining}
-          </span>
-        )}
+        </label>
       </div>
 
-      <span className="text-danger text-sm min-h-5 block">{errorMessage}</span>
-    </label>
+      <span className="text-danger text-sm min-h-5 mt-1 block">
+        {errorMessage}
+      </span>
+    </div>
   )
 }

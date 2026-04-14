@@ -11,7 +11,7 @@ export default function Separator({ label }: SeparatorProps) {
     <div className="flex items-center w-full">
       <div className="flex-1 h-px bg-primary-bg" />
 
-      <span className="px-3 text-xs text-gray-400 bg-secondary-bg">
+      <span className="px-3 text-sm text-gray-400 bg-secondary-bg">
         {label}
       </span>
 
