@@ -1,73 +1,44 @@
-import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router"
-import { useLoading } from "../context/LoadingContext"
 import { MapPin, Globe, Star, Building2, ChevronLeft } from "lucide-react"
-import { getContractorProfile } from "../lib/profilesApi"
 import Button from "../components/Button"
 import Link from "../components/Link"
-import type { ContractorProfile } from "../types/profiles"
 import Card from "../components/Card"
-import FreelancerReviewsSection from "../components/pieces/FreelancerReviewsSection"
-import { showToast } from "../components/showToast"
+import ReviewsList from "../features/reviews/components/ReviewsList"
+import { calculateAverageRating } from "../features/reviews/utils/reviews.utils"
+import { useContractorProfile } from "../features/profiles/api/useProfiles.api"
+import { getCountryName } from "../utils/countryHelper"
+import { handleSafeBack } from "../utils/navigation"
 
 export default function ContractorProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { setLoading } = useLoading()
-  const [profile, setProfile] = useState<ContractorProfile | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!id) return
-    const loadProfile = async () => {
-      setLoading(true)
-      try {
-        const result = await getContractorProfile(id)
-        if (!result.success) {
-          showToast("error", result.error)
-          return
-        }
-        setProfile(result.data)
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Error inesperado"
-        setError(message)
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadProfile()
-  }, [id, setLoading])
+  const { data: profile, isLoading, error } = useContractorProfile(id)
+
+  if (isLoading) return null
 
   if (error || !profile) {
     return (
-      <main className="min-h-dvh flex flex-col items-center justify-center gap-4 text-center">
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 text-center">
         <p className="text-zinc-400 text-lg">
-          {error ?? "Perfil no encontrado"}
+          {error instanceof Error ? error.message : "Perfil no encontrado"}
         </p>
-        <Button btnType="primary" onClick={() => navigate("/dashboard")}>
+        <Button btnType="primary" onClick={() => handleSafeBack(navigate)}>
           <ChevronLeft size={16} className="inline mr-1" />
           Volver
         </Button>
-      </main>
+      </div>
     )
   }
 
-  // calcular rating promedio
-  let avgRating: string | null = null
-  if (profile.reviews && profile.reviews.length > 0) {
-    let sum = 0
-    for (const r of profile.reviews) {
-      sum += parseFloat(r.rating)
-    }
-    avgRating = (sum / profile.reviews.length).toFixed(1)
-  }
+  const ratingInfo = calculateAverageRating(profile.reviews)
 
   return (
-    <main className="min-h-dvh bg-primary-bg py-10 px-4">
+    <div className="min-h-dvh bg-primary-bg py-10 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <Button
           btnType="primary"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => handleSafeBack(navigate)}
           className="flex items-center gap-1 text-zinc-400 hover:text-primary transition-colors text-sm cursor-pointer">
           <ChevronLeft size={16} />
           Volver
@@ -85,12 +56,12 @@ export default function ContractorProfilePage() {
                 <h1 className="text-2xl font-bold text-zinc-100">
                   {profile.companyName ?? profile.user?.name ?? "Contratante"}
                 </h1>
-                {avgRating && (
+                {ratingInfo && (
                   <span className="flex items-center gap-1 text-sm text-amber-400 font-semibold">
-                    <Star size={14} fill="currentColor" />
-                    {avgRating}
+                    <Star size={18} fill="currentColor" />
+                    {ratingInfo.average}
                     <span className="text-zinc-500 font-normal">
-                      ({profile.reviews!.length})
+                      ({ratingInfo.count})
                     </span>
                   </span>
                 )}
@@ -105,8 +76,8 @@ export default function ContractorProfilePage() {
               <div className="flex flex-wrap gap-4 mt-2 text-sm text-zinc-400">
                 {profile.country && (
                   <span className="flex items-center gap-1">
-                    <MapPin size={13} />
-                    {profile.country}
+                    <MapPin size={16} />
+                    {getCountryName(profile.country)}
                   </span>
                 )}
                 {profile.websiteUrl && (
@@ -115,7 +86,7 @@ export default function ContractorProfilePage() {
                     isExternal
                     target="_blank"
                     className="flex items-center gap-1 hover:text-primary transition-colors">
-                    <Globe size={13} />
+                    <Globe size={16} />
                     Sitio web
                   </Link>
                 )}
@@ -130,10 +101,8 @@ export default function ContractorProfilePage() {
           )}
         </Card>
 
-        {profile.reviews && profile.reviews.length > 0 && (
-          <FreelancerReviewsSection reviews={profile.reviews} />
-        )}
+        <ReviewsList reviews={profile.reviews ?? []} />
       </div>
-    </main>
+    </div>
   )
 }

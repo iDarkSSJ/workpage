@@ -1,6 +1,6 @@
 import { KeyRound } from "lucide-react"
 import Card from "../components/Card"
-import ResetPasswordForm from "../components/pieces/ResetPasswordForm"
+import ResetPasswordForm from "../features/auth/components/ResetPasswordForm"
 import { useNavigate, useSearchParams } from "react-router"
 import { useEffect } from "react"
 
@@ -10,11 +10,11 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (token === "") navigate("/login", { replace: true })
+    if (token === "") navigate("/dashboard", { replace: true })
   }, [token, navigate])
 
   return (
-    <main className="w-full min-h-dvh flex flex-col justify-center items-center gap-8 bg-linear-to-b from-zinc-950 to-zinc-900 px-4 py-10 md:py-16">
+    <div className="w-full min-h-dvh flex flex-col justify-center items-center gap-8 bg-linear-to-b from-zinc-950 to-zinc-900 px-4 py-10 md:py-16">
       <Card className="w-full max-w-md p-8 space-y-6">
         <div className="text-center space-y-2">
           <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-2xl bg-primary/10">
@@ -30,6 +30,6 @@ export default function ResetPasswordPage() {
 
         <ResetPasswordForm token={token} />
       </Card>
-    </main>
+    </div>
   )
 }
