@@ -48,7 +48,10 @@ export default function StarRating({
                 ? "text-amber-400 fill-amber-400"
                 : "text-zinc-600 fill-transparent hover:text-amber-400/50",
             )}>
-            <Star size={readonly ? 18 : 32} />
+            <Star
+              fill={star <= value ? "currentColor" : "transparent"}
+              size={readonly ? 18 : 32}
+            />
           </button>
         ))}
       </div>

@@ -5,14 +5,19 @@ import VerifyAccountEmail from "./emailComponents/VerifyAccountEmail"
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
+const emailAddress = "Workpage <noreply@goash.site>"
+
 interface VerificationParams {
-  user: { name: string; email: string };
-  verifyUrl: string;
+  user: { name: string; email: string }
+  verifyUrl: string
 }
 
-export const sendVerificationEmail = async ({ user, verifyUrl }: VerificationParams) => {
+export const sendVerificationEmail = async ({
+  user,
+  verifyUrl,
+}: VerificationParams) => {
   const { error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: `${emailAddress}`,
     to: user.email,
     subject: "Verificación de Cuenta",
     react: VerifyAccountEmail({ verifyUrl, userName: user.name }),
@@ -24,13 +29,16 @@ export const sendVerificationEmail = async ({ user, verifyUrl }: VerificationPar
 }
 
 interface ResetParams {
-  userEmail: string;
-  resetUrl: string;
+  userEmail: string
+  resetUrl: string
 }
 
-export const sendResetPasswordEmail = async ({ userEmail, resetUrl }: ResetParams) => {
+export const sendResetPasswordEmail = async ({
+  userEmail,
+  resetUrl,
+}: ResetParams) => {
   const { error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: `${emailAddress}`,
     to: userEmail,
     subject: "Restablecer contraseña",
     react: ResetPasswordEmail({ resetUrl }),
@@ -42,9 +50,9 @@ export const sendResetPasswordEmail = async ({ userEmail, resetUrl }: ResetParam
 }
 
 interface DeleteParams {
-  userEmail: string;
-  userName: string;
-  confirmUrl: string;
+  userEmail: string
+  userName: string
+  confirmUrl: string
 }
 
 // Send Delete Account Verification Email
@@ -54,7 +62,7 @@ export const sendDeleteAccVerEmail = async ({
   confirmUrl,
 }: DeleteParams) => {
   const { error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: `${emailAddress}`,
     to: userEmail,
     subject: "Verificación de eliminacion de cuenta",
     react: DeleteAccountEmail({ confirmUrl, userName }),
