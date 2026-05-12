@@ -47,13 +47,19 @@ export default function ReviewItem({ review }: Props) {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center shrink-0">
             {reviewerImage ? (
-              <img src={reviewerImage} alt={reviewerName} className="w-full h-full object-cover" />
+              <img
+                src={reviewerImage}
+                alt={reviewerName}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <User size={20} className="text-zinc-500" />
             )}
           </div>
           <div>
-            <p className="text-zinc-100 font-bold leading-none mb-1">{reviewerName}</p>
+            <p className="text-zinc-100 font-bold leading-none mb-1">
+              {reviewerName}
+            </p>
             <div className="flex items-center gap-2 text-zinc-500">
               <Calendar size={12} className="shrink-0" />
               <span className="text-[11px] font-medium">
@@ -64,20 +70,18 @@ export default function ReviewItem({ review }: Props) {
         </div>
 
         {isOwner && (
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+          <div className="flex items-center gap-1 transition-all">
             <button
               onClick={() => setIsEditing(true)}
               className="p-2 rounded-lg text-zinc-600 hover:text-primary hover:bg-primary/10 transition-all"
-              title="Editar reseña"
-            >
+              title="Editar reseña">
               <Pencil size={16} />
             </button>
             <button
               onClick={handleDelete}
               disabled={deleteMut.isPending}
               className="p-2 rounded-lg text-zinc-600 hover:text-danger hover:bg-danger/10 transition-all disabled:opacity-50"
-              title="Eliminar reseña"
-            >
+              title="Eliminar reseña">
               <Trash2 size={16} />
             </button>
           </div>
@@ -85,11 +89,7 @@ export default function ReviewItem({ review }: Props) {
       </div>
 
       <div className="mb-3">
-        <StarRating 
-          value={Number(review.rating)} 
-          readonly 
-          showInput={false} 
-        />
+        <StarRating value={Number(review.rating)} readonly showInput={false} />
       </div>
 
       {review.comment && (

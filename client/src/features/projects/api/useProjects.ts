@@ -4,6 +4,7 @@ import {
   getProjectReq,
   createProjectReq,
   getMyProjectsReq,
+  updateProjectStatusReq,
 } from "./projects.api"
 import type { CreateProjectData as CreateProjectInput } from "../schemas/projects.schema"
 import { showToast } from "../../../components/showToast"
@@ -54,5 +55,19 @@ export const useCreateProject = () => {
     },
     onError: (error: Error) =>
       showToast("error", error.message || "No se pudo crear el proyecto"),
+  })
+}
+
+export const useCloseProject = (projectId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => updateProjectStatusReq(projectId, { status: "closed" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project", projectId] })
+      showToast("success", "Proyecto cerrado correctamente")
+    },
+    onError: (error: Error) =>
+      showToast("error", error.message || "No se pudo cerrar el proyecto"),
   })
 }

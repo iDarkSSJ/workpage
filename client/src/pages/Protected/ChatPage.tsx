@@ -20,7 +20,7 @@ export default function ChatPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[calc(100vh-64px)] items-center justify-center text-zinc-500">
+      <div className="flex h-[calc(100dvh-64px)] items-center justify-center text-zinc-500">
         Cargando mensajes...
       </div>
     )
@@ -32,7 +32,7 @@ export default function ChatPage() {
   // En Desktop siempre se ven ambos (Sidebar 350px, ChatArea flex-1).
 
   return (
-    <div className="flex w-full h-[calc(100vh-64px)] bg-primary-bg overflow-hidden relative">
+    <div className="flex w-full h-[calc(100dvh-64px)] bg-primary-bg overflow-hidden relative">
       {/* Sidebar Area */}
       <div
         className={`

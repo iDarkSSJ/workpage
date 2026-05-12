@@ -68,7 +68,7 @@ export default function Navbar() {
             onClick={() => navigate(session ? "/dashboard" : "/")}>
             <BriefcaseBusiness className="text-primary" size={28} />
             <span className="text-xl font-bold text-zinc-100 hidden sm:block">
-              Workpage
+              SIGSP
             </span>
           </div>
 

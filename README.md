@@ -1,4 +1,4 @@
-# Workpage
+# SIGSP
 
 Plataforma de contratación freelance full-stack construida con Node.js/Express (Backend), React/Vite (Frontend) y PostgreSQL (Base de datos). Permite a contratantes publicar proyectos, a freelancers postularse con propuestas, formalizar contratos, calificarse mutuamente y comunicarse en tiempo real.
 
@@ -10,18 +10,26 @@ Este documento describe los pasos necesarios para configurar, instalar las depen
 
 ## Requisitos Previos
 
--    Tener instalado [Node.js](https://nodejs.org/).
-    
--    Tener una base de datos **PostgreSQL** disponible (ya sea local o en la nube) y tener a la mano su URL de conexión (*connection string*).
-    
--    Asegúrate de estar en la carpeta raíz del proyecto antes de ejecutar los comandos.
-    
+- Tener instalado [Node.js](https://nodejs.org/).
 
-- --
+- Tener una base de datos **PostgreSQL** disponible (ya sea local o en la nube) y tener a la mano su URL de conexión (_connection string_).
+
+- Asegúrate de estar en la carpeta raíz del proyecto antes de ejecutar los comandos.
+
+---
 
 ## Pasos de Instalación y Configuración
 
-### Paso 1: Instalar todas las dependencias
+### Paso 1: Clonar el repositorio
+
+Clona el repositorio en tu máquina local y accede a la carpeta del proyecto:
+
+```bash
+git clone https://github.com/iDarkSSJ/SIGSP.git
+cd SIGSP
+```
+
+### Paso 2: Instalar todas las dependencias
 
 El primer paso es instalar las librerías necesarias para el Frontend (cliente) y el Backend (servidor).
 
@@ -35,28 +43,25 @@ npm run install:all
 
 > **Nota:** Este comando instalará automáticamente las dependencias dentro de las carpetas `client` y `server`.
 
-### Paso 2: Configurar las Variables de Entorno
+### Paso 3: Configurar las Variables de Entorno
 
 Antes de ejecutar el proyecto, debes configurar las variables de entorno.
 
-En cada uno de los módulos (`client` y `server`) encontrarás un archivo de ejemplo llamado `.env.example`. Debes copiar estos archivos, renombrarlos a `.env` y llenarlos con tu información.
+En cada uno de los módulos (`client` y `server`) encontrarás un archivo de ejemplo llamado `.env.example`. Debes copiar estos archivos, renombrarlos a `.env` y llenarlos con la información correspondiente.
 
 De todas las variables, las únicas que requieren **credenciales reales** son:
 
 1.  **Resend API Key:** Necesaria para el envío de correos electrónicos.
-    
 2.  **Credenciales de Google OAuth:** Necesarias para la autenticación y login con Google.
-    
-3.  **URL de PostgreSQL:** La cadena de conexión (*connection string*) hacia tu base de datos.
-    
+3.  **URL de PostgreSQL:** La cadena de conexión (_connection string_) hacia la base de datos.
 
-### Paso 3: Base de Datos y Automatización
+### Paso 4: Base de Datos y Automatización
 
-Asegúrate de colocar correctamente tu URL de conexión de PostgreSQL en las variables de entorno del servidor.
+Asegúrate de colocar correctamente la URL de conexión de PostgreSQL en las variables de entorno del servidor.
 
 **No necesitas crear las tablas manualmente.** El backend está configurado para sincronizar automáticamente el esquema con la base de datos cada vez que se inicia (`npm run dev` o `npm run start`).
 
-### Paso 4: Construir (Build) el Cliente
+### Paso 5: Construir (Build) el Cliente
 
 Para que el frontend funcione correctamente en modo producción o vista previa, necesitas compilar el código.
 
@@ -74,7 +79,7 @@ npm run build:client
 
 Para levantar la aplicación, necesitas iniciar tanto el servidor como el cliente. Se recomienda abrir **dos terminales distintas** (ambas en la raíz del proyecto).
 
-### Paso 5: Iniciar el Servidor (Backend)
+### Paso 6: Iniciar el Servidor (Backend)
 
 En tu **primera terminal**, inicia el servidor ejecutando:
 
@@ -86,7 +91,7 @@ npm run start:server
 
 El servidor ejecutará automáticamente `db:setup` (sincronizando tablas e insertando skills) y quedará escuchando las peticiones.
 
-### Paso 6: Iniciar el Cliente (Frontend)
+### Paso 7: Iniciar el Cliente (Frontend)
 
 En tu **segunda terminal**, inicia la vista previa de la interfaz web ejecutando:
 
@@ -96,7 +101,7 @@ Bash
 npm run start:client
 ```
 
-Este comando levantará el frontend para que puedas acceder a la interfaz de Workpage desde tu navegador.
+Este comando levantará el frontend para que puedas acceder a la interfaz de SIGSP desde tu navegador.
 
 # Acceder al frontend
 
@@ -104,28 +109,28 @@ Automaticamente el frontend se abrirá en la dirección `http://localhost:5173`.
 Y se comunicara al backend en la dirección `http://localhost:3000`.
 (Si verificas correctamente la url del backend en el archivo `.env` del frontend, no deberas cambiar nada)
 
-- --
+---
 
 ## Stack Tecnológico
 
-| Capa       | Tecnología                                          |
-| ---------- | --------------------------------------------------- |
-| Backend    | Node.js, Express, TypeScript                        |
-| Base de datos | PostgreSQL + Drizzle ORM                         |
-| Autenticación | Better Auth (email/password + Google OAuth)      |
-| Emails     | Resend SDK                                          |
-| WebSockets | Socket.io                                           |
-| Frontend   | React 19, Vite, TypeScript                          |
-| Estado     | TanStack Query (React Query)                        |
-| Validación | Zod (cliente y servidor)                            |
-| Estilos    | Tailwind CSS                                        |
+| Capa          | Tecnología                                  |
+| ------------- | ------------------------------------------- |
+| Backend       | Node.js, Express, TypeScript                |
+| Base de datos | PostgreSQL + Drizzle ORM                    |
+| Autenticación | Better Auth (email/password + Google OAuth) |
+| Emails        | Resend SDK                                  |
+| WebSockets    | Socket.io                                   |
+| Frontend      | React 19, Vite, TypeScript                  |
+| Estado        | TanStack Query (React Query)                |
+| Validación    | Zod (cliente y servidor)                    |
+| Estilos       | Tailwind CSS                                |
 
 ---
 
 ## Estructura del Monorepo
 
 ```
-workpage/
+SIGSP/
 ├── client/          # Frontend (React / Vite)
 └── server/          # Backend (Node.js / Express)
 ```
@@ -178,15 +183,15 @@ server/src/
 
 ### Módulos del Backend
 
-| Módulo        | Router                  | Controller(s)                       | Service(s)                          |
-| ------------- | ----------------------- | ----------------------------------- | ----------------------------------- |
-| Auth          | `router/auth.ts`        | —                                   | Better Auth + router custom          |
-| Perfiles      | `router/profiles.ts`    | `profile`, `experiences`, `certifications`, `portfolio`, `skills` | `freelancer.service`, `contractor.service`, `experiences.service`, `certifications.service`, `portfolio.service`, `skills.service` |
-| Proyectos     | `router/projects.ts`    | `projects.controller`               | `projects.service`                  |
-| Propuestas    | `router/proposals.ts`   | `proposals.controller`              | `proposals.service`                 |
-| Contratos     | `router/contracts.ts`   | `contracts.controller`              | `contracts.service`                 |
-| Reviews       | `router/reviews.ts`     | `reviews.controller`                | `reviews.service`                   |
-| Chat          | `router/conversation.ts`| `conversation.controller`           | `conversation.service`              |
+| Módulo     | Router                   | Controller(s)                                                     | Service(s)                                                                                                                         |
+| ---------- | ------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Auth       | `router/auth.ts`         | —                                                                 | Better Auth + router custom                                                                                                        |
+| Perfiles   | `router/profiles.ts`     | `profile`, `experiences`, `certifications`, `portfolio`, `skills` | `freelancer.service`, `contractor.service`, `experiences.service`, `certifications.service`, `portfolio.service`, `skills.service` |
+| Proyectos  | `router/projects.ts`     | `projects.controller`                                             | `projects.service`                                                                                                                 |
+| Propuestas | `router/proposals.ts`    | `proposals.controller`                                            | `proposals.service`                                                                                                                |
+| Contratos  | `router/contracts.ts`    | `contracts.controller`                                            | `contracts.service`                                                                                                                |
+| Reviews    | `router/reviews.ts`      | `reviews.controller`                                              | `reviews.service`                                                                                                                  |
+| Chat       | `router/conversation.ts` | `conversation.controller`                                         | `conversation.service`                                                                                                             |
 
 ---
 
@@ -242,26 +247,26 @@ features/<nombre>/
 
 ### Rutas del Frontend
 
-| Ruta                       | Acceso        | Página                    |
-| -------------------------- | ------------- | ------------------------- |
-| `/`                        | Público       | Redirige a `/dashboard`   |
-| `/login`                   | Solo invitados| `LoginPage`               |
-| `/register`                | Solo invitados| `RegisterPage`            |
-| `/forgot-password`         | Público       | `ForgotPasswordPage`      |
-| `/reset-password`          | Público       | `ResetPasswordPage`       |
-| `/projects`                | Público       | `ProjectsPage`            |
-| `/projects/:id`            | Público       | `ProjectDetailPage`       |
-| `/freelancers/:id`         | Público       | `FreelancerProfilePage`   |
-| `/contractors/:id`         | Público       | `ContractorProfilePage`   |
-| `/dashboard`               | 🔒 Autenticado | `DashboardPage`           |
-| `/dashboard/account`       | 🔒 Autenticado | `AccountSettingsPage`     |
-| `/dashboard/edit-profile`  | 🔒 Autenticado | `EditProfilePage`         |
-| `/dashboard/contracts`     | 🔒 Autenticado | `ContractsPage`           |
-| `/dashboard/chat`          | 🔒 Autenticado | `ChatPage`                |
-| `/dashboard/chat/:id`      | 🔒 Autenticado | `ChatPage`                |
-| `/projects/new`            | 🔒 Autenticado | `NewProjectPage`          |
-| `/profile/setup`           | 🔒 Autenticado | `ProfileSetupPage`        |
-| `*`                        | Público       | `NotFoundPage` (404)      |
+| Ruta                      | Acceso         | Página                  |
+| ------------------------- | -------------- | ----------------------- |
+| `/`                       | Público        | Redirige a `/dashboard` |
+| `/login`                  | Solo invitados | `LoginPage`             |
+| `/register`               | Solo invitados | `RegisterPage`          |
+| `/forgot-password`        | Público        | `ForgotPasswordPage`    |
+| `/reset-password`         | Público        | `ResetPasswordPage`     |
+| `/projects`               | Público        | `ProjectsPage`          |
+| `/projects/:id`           | Público        | `ProjectDetailPage`     |
+| `/freelancers/:id`        | Público        | `FreelancerProfilePage` |
+| `/contractors/:id`        | Público        | `ContractorProfilePage` |
+| `/dashboard`              | 🔒 Autenticado | `DashboardPage`         |
+| `/dashboard/account`      | 🔒 Autenticado | `AccountSettingsPage`   |
+| `/dashboard/edit-profile` | 🔒 Autenticado | `EditProfilePage`       |
+| `/dashboard/contracts`    | 🔒 Autenticado | `ContractsPage`         |
+| `/dashboard/chat`         | 🔒 Autenticado | `ChatPage`              |
+| `/dashboard/chat/:id`     | 🔒 Autenticado | `ChatPage`              |
+| `/projects/new`           | 🔒 Autenticado | `NewProjectPage`        |
+| `/profile/setup`          | 🔒 Autenticado | `ProfileSetupPage`      |
+| `*`                       | Público        | `NotFoundPage` (404)    |
 
 ---
 
@@ -283,6 +288,6 @@ features/<nombre>/
 
 ## Documentación de Schemas
 
-- [`server/AUTH-SCHEMA.md`](./server/AUTH-SCHEMA.md) — Tablas gestionadas por Better Auth
-- [`server/BUSINESS-SCHEMA.md`](./server/BUSINESS-SCHEMA.md) — Tablas de lógica de negocio
-- [`server/ERdiagram.md`](./server/ERdiagram.md) — Diagrama entidad-relación completo (Mermaid)
+- [`AUTH-SCHEMA.md`](./AUTH-SCHEMA.md) — Tablas gestionadas por Better Auth
+- [`BUSINESS-SCHEMA.md`](./BUSINESS-SCHEMA.md) — Tablas de lógica de negocio
+- [`ERdiagram.md`](./ERdiagram.md) — Diagrama entidad-relación completo (Mermaid)

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router"
-import { useProject } from "../features/projects/api/useProjects"
+import { useProject, useCloseProject } from "../features/projects/api/useProjects"
 import { useAuth } from "../context/AuthContext"
 import Card from "../components/Card"
 import Button from "../components/Button"
@@ -36,6 +36,7 @@ export default function ProjectDetailPage() {
 
   const { data: project, isLoading } = useProject(id!)
   const { data: myProfiles } = useMyProfile()
+  const closeProject = useCloseProject(id!)
 
   if (isLoading) return null
   if (!project) return null
@@ -262,6 +263,20 @@ export default function ProjectDetailPage() {
                 </span>
               </div>
             </Card>
+          )}
+
+          {isOwner && project.status !== "closed" && (
+            <Button
+              btnType="default"
+              className="w-full border-red-500/40 text-red-400 hover:bg-red-500/10"
+              disabled={closeProject.isPending}
+              onClick={() => {
+                if (window.confirm("¿Estás seguro de que deseas cerrar este proyecto? Ya no recibirás nuevas propuestas.")) {
+                  closeProject.mutate()
+                }
+              }}>
+              {closeProject.isPending ? "Cerrando..." : "Cerrar proyecto"}
+            </Button>
           )}
         </div>
       </div>

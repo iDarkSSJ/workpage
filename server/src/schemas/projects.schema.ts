@@ -17,7 +17,7 @@ export const createProjectSchema = z.object({
 })
 
 export const updateProjectStatusSchema = z.object({
-  status: z.enum(["open", "in_progress", "closed", "completed"]),
+  status: z.literal("closed"),
 })
 
 export type QueryProjectsData = z.infer<typeof queryProjectsSchema>

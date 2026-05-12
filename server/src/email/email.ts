@@ -5,7 +5,7 @@ import VerifyAccountEmail from "./emailComponents/VerifyAccountEmail"
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
-const emailAddress = "Workpage <noreply@goash.site>"
+const emailAddress = "SIGSP <noreply@goash.site>"
 
 interface VerificationParams {
   user: {
