@@ -3,9 +3,7 @@ import {
   text,
   timestamp,
   numeric,
-  date,
   index,
-  unique,
   primaryKey,
 } from "drizzle-orm/pg-core"
 import { user } from "../auth-schema"
@@ -53,7 +51,6 @@ export const contractorProfile = pgTable("contractor_profile", {
     .notNull(),
 })
 
-
 export const freelancerSkill = pgTable(
   "freelancer_skill",
   {
@@ -77,8 +74,8 @@ export const freelancerExperience = pgTable(
     title: text("title").notNull(),
     company: text("company").notNull(),
     description: text("description"),
-    startDate: date("start_date").notNull(),
-    endDate: date("end_date"), // NULL = empleo actual
+    startDate: timestamp("start_date", { mode: "date" }).notNull(),
+    endDate: timestamp("end_date", { mode: "date" }), // NULL = empleo actual
   },
   (t) => [index("experience_freelancer_idx").on(t.freelancerId)],
 )
@@ -92,14 +89,14 @@ export const freelancerCertification = pgTable(
       .references(() => freelancerProfile.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     institution: text("institution").notNull(),
-    issuedDate: date("issued_date"),
+    issuedDate: timestamp("issued_date", { mode: "date" }).notNull(),
     url: text("url"),
   },
   (t) => [index("certification_freelancer_idx").on(t.freelancerId)],
 )
 
-export const featuredProject = pgTable(
-  "featured_project",
+export const freelancerPortfolio = pgTable(
+  "freelancer_portfolio",
   {
     id: text("id").primaryKey(),
     freelancerId: text("freelancer_id")
@@ -111,5 +108,5 @@ export const featuredProject = pgTable(
     projectUrl: text("project_url"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (t) => [index("featured_project_freelancer_idx").on(t.freelancerId)],
+  (t) => [index("freelancer_portfolio_freelancer_id_idx").on(t.freelancerId)],
 )

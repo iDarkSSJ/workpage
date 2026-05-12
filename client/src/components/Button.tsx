@@ -21,7 +21,7 @@ export default function Button({
     <button
       {...rest}
       className={cn(
-        "px-2.5 py-2 rounded-2xl font-semibold cursor-pointer transition-colors",
+        "px-2.5 py-2 rounded-2xl font-semibold cursor-pointer transition-colors min-w-fit",
         btnType === "default" && "text-zinc-400 hover:bg-gray-500/10",
         btnType === "primary" && "text-primary hover:bg-primary/10",
         btnType === "danger" && "text-red-500 hover:bg-red-500/10",

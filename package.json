@@ -1,11 +1,10 @@
 {
-  "name": "workpage",
+  "name": "SIGSP",
   "version": "1.0.0",
   "scripts": {
-    "i:all": "npm i && cd client && npm i && cd ../server && npm i",
-    "i:all:pnpm": "pnpm i && cd client && pnpm i && cd ../server && pnpm i"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+    "install:all": "npm install --prefix client && npm install --prefix server",
+    "build:client": "npm run build --prefix client",
+    "start:client": "npm run preview --prefix client",
+    "start:server": "npm run start --prefix server"
   }
 }

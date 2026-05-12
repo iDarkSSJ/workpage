@@ -22,5 +22,11 @@ export const authClient = createAuthClient({
       },
     }),
   ],
-  baseURL: "http://localhost:3000", // The base URL of your auth server
+  baseURL: import.meta.env.VITE_API_BASE_URL, // The base URL of your auth server
+  advanced: {
+    crossSubdomainCookies: {
+      enabled: true,
+      domain: ".goash.site",
+    },
+  },
 })

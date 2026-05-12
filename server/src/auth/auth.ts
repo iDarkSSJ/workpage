@@ -2,11 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db } from "../database/database"
 import * as authSchema from "../database/auth-schema"
-import {
-  sendDeleteAccVerEmail,
-  sendResetPasswordEmail,
-  sendVerificationEmail,
-} from "../email/email"
+import { sendResetPasswordEmail, sendVerificationEmail } from "../email/email"
 import { eq } from "drizzle-orm"
 
 export const auth = betterAuth({
@@ -24,8 +20,8 @@ export const auth = betterAuth({
     },
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerificationEmail({
-        verifyUrl: url,
         user,
+        verifyUrl: url,
       })
     },
   },
@@ -39,28 +35,17 @@ export const auth = betterAuth({
   socialProviders: {
     google: {
       prompt: "select_account",
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
   user: {
     additionalFields: {
       role: {
         type: "string",
-        input: true, //  This property defaults to true, meaning the field will be part of the user input during operations like registration. ↓↓↓
-        // https://www.better-auth.com/docs/concepts/typescript#the-input-property
-      },
-    },
-    deleteUser: {
-      enabled: true,
-      sendDeleteAccountVerification: async ({ user, url }) => {
-        sendDeleteAccVerEmail({
-          userEmail: user.email,
-          userName: user.name,
-          confirmUrl: url,
-        })
+        input: true,
       },
     },
   },
-  trustedOrigins: [process.env.CLIENT_URL], 
+  trustedOrigins: [process.env.CLIENT_URL || ""],
 })

@@ -1,4 +1,8 @@
 node_modules
 .env
+.env.*
 dist
 pnpm-lock.yaml
+test-e2e.mjs
+drizzle
+drizzle

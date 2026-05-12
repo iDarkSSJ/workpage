@@ -1,11 +1,17 @@
 {
-  "name": "workpage",
+  "name": "SIGSP",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx src/database/seed.ts",
+    "db:setup": "npm run db:push && npm run db:seed",
+    "start": "npm run db:setup && tsx src/index.ts",
+    "dev": "npm run db:setup && tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +27,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "resend": "^6.9.2",
+    "socket.io": "^4.8.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -30,6 +37,10 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "drizzle-kit": "^0.31.9",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "vitest": "^4.1.2"
+  },
+  "overrides": {
+    "esbuild": "^0.25.12"
   }
 }

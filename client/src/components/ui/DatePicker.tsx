@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { format, parse } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/style.css"
@@ -9,31 +9,31 @@ import Button from "../Button"
 import Input from "./Input"
 
 interface DatePickerProps {
+  name: string
   label: string
-  value: string
-  onChange: (date: string) => void
+  defaultValue?: string | null
   errorMessage?: string
   className?: string
 }
 
 export default function DatePicker({
+  name,
   label,
-  value,
-  onChange,
+  defaultValue = "",
   errorMessage = "",
   className,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
-
-  const selectedDate = value
-    ? parse(value, "yyyy-MM-dd", new Date())
-    : undefined
+  const [isoString, setIsoString] = useState(defaultValue || "")
+  const selectedDate = isoString ? parseISO(isoString) : undefined
   const displayValue = selectedDate
     ? format(selectedDate, "dd MMM yyyy", { locale: es })
     : ""
 
   return (
     <div className={cn("relative mt-4", className)}>
+      <input type="hidden" name={name} value={isoString} />
+
       <div className="relative">
         <Input
           type="text"
@@ -60,12 +60,10 @@ export default function DatePicker({
               mode="single"
               selected={selectedDate}
               onSelect={(date) => {
-                onChange(date ? format(date, "yyyy-MM-dd") : "")
+                setIsoString(date ? date.toISOString() : "")
                 setOpen(false)
               }}
               locale={es}
-              // ESTO ES PARA QUE SE VEA EL CALENDARIO CON EL COLOR VIOLETA
-              // COMPLICADO PERO FUNCIONA :D - jose luis
               style={
                 {
                   "--rdp-accent-color": "#8b5cf6",
@@ -79,13 +77,13 @@ export default function DatePicker({
               }
             />
 
-            {value && (
+            {isoString && (
               <Button
                 type="button"
                 btnType="danger"
-                className="mt-3 w-full text-xs py-2"
+                className="mt-3 w-full text-sm py-2"
                 onClick={() => {
-                  onChange("")
+                  setIsoString("")
                   setOpen(false)
                 }}>
                 Limpiar fecha

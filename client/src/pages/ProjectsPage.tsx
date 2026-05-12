@@ -1,65 +1,37 @@
-import { useEffect, useState } from "react"
-import { getProjects } from "../lib/projectsApi"
-import type { Project } from "../types/projects"
-import ProjectCard from "../components/pieces/ProjectCard"
+import { useState } from "react"
+import { useProjects } from "../features/projects/api/useProjects"
+import ProjectCard from "../features/projects/components/ProjectCard"
 import Input from "../components/ui/Input"
 import Button from "../components/Button"
 import Card from "../components/Card"
-import { showToast } from "../components/showToast"
 import { SlidersHorizontal, ChevronRight, ChevronLeft } from "lucide-react"
 
-import { useLoading } from "../context/LoadingContext"
-
-// respuesta paginada del servidor
-type PagedResult = {
-  data: Project[]
-  page: number
-  limit: number
-}
-
 export default function ProjectsPage() {
-  const [data, setData] = useState<PagedResult | null>(null)
-  const { isLoading, setLoading } = useLoading()
   const [page, setPage] = useState(1)
   const [minBudget, setMinBudget] = useState("")
   const [maxBudget, setMaxBudget] = useState("")
+  const [activeFilters, setActiveFilters] = useState<{
+    minBudget?: number
+    maxBudget?: number
+  }>({})
 
-  const fetchProjects = async () => {
-    setLoading(true)
-    try {
-      const res = await getProjects({
-        page,
-        limit: 10,
-        minBudget: minBudget ? Number(minBudget) : undefined,
-        maxBudget: maxBudget ? Number(maxBudget) : undefined,
-      })
-      if (!res.success) {
-        showToast("error", res.error)
-        return
-      }
-      setData(res.data as PagedResult)
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al cargar proyectos"
-      showToast("error", message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data } = useProjects({
+    page,
+    limit: 10,
+    ...activeFilters,
+  })
 
-  useEffect(() => {
-    fetchProjects()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
-
-  const handleFilter = (e: React.FormEvent) => {
+  const handleFilter = (e: React.SubmitEvent) => {
     e.preventDefault()
     setPage(1)
-    fetchProjects()
+    setActiveFilters({
+      minBudget: minBudget ? Number(minBudget) : undefined,
+      maxBudget: maxBudget ? Number(maxBudget) : undefined,
+    })
   }
 
   return (
-    <main className="min-h-dvh bg-primary-bg py-10 px-4">
+    <div className="min-h-dvh bg-primary-bg py-10 px-4">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
         {/* sidebar de filtros */}
         <aside className="w-full md:w-80 shrink-0">
@@ -107,18 +79,17 @@ export default function ProjectsPage() {
             </h1>
           </div>
 
-          {!isLoading &&
-            (data?.data && data.data.length > 0 ? (
-              <div className="flex flex-col gap-4">
-                {data.data.map((p) => (
-                  <ProjectCard key={p.id} project={p} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 text-zinc-500">
-                No se encontraron proyectos abiertos.
-              </div>
-            ))}
+          {data?.data && data.data.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {data.data.map((p) => (
+                <ProjectCard key={p.id} project={p} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 text-zinc-500">
+              No se encontraron proyectos abiertos.
+            </div>
+          )}
 
           {/* paginación */}
           {data && data.data.length > 0 && (
@@ -142,6 +113,6 @@ export default function ProjectsPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   )
 }

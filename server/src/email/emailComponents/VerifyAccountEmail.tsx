@@ -56,7 +56,7 @@ export default function VerifyAccountEmail({
             </Section>
 
             <Section>
-              <Text className="mb-4 break-all text-xs text-[#9e9e9e]">
+              <Text className="mb-4 break-all text-sm text-[#9e9e9e]">
                 Si el botón no funciona, copia y pega este enlace en tu
                 navegador:
                 <br />
@@ -68,7 +68,7 @@ export default function VerifyAccountEmail({
             </Section>
 
             <Section>
-              <Text className="mt-6 text-xs text-[#6e6e6e]">
+              <Text className="mt-6 text-sm text-[#6e6e6e]">
                 Si no creaste esta cuenta, puedes ignorar este mensaje.
               </Text>
             </Section>

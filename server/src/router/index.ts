@@ -4,7 +4,7 @@ import projectsRouter from "./projects"
 import proposalsRouter from "./proposals"
 import contractsRouter from "./contracts"
 import reviewsRouter from "./reviews"
-import chatRouter from "./chat"
+import conversationsRouter from "./conversation"
 
 const apiRouter = Router()
 
@@ -17,6 +17,6 @@ apiRouter.use("/projects", projectsRouter)
 apiRouter.use("/proposals", proposalsRouter)
 apiRouter.use("/contracts", contractsRouter)
 apiRouter.use("/reviews", reviewsRouter)
-apiRouter.use("/conversations", chatRouter)
+apiRouter.use("/conversations", conversationsRouter)
 
 export default apiRouter

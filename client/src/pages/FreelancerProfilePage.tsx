@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router"
-import { useLoading } from "../context/LoadingContext"
-
-import { MapPin, Globe, Star, ChevronLeft, DollarSign } from "lucide-react"
+import { MapPin, Globe, Star, ChevronLeft, DollarSign, MessageSquare } from "lucide-react"
 import Button from "../components/Button"
 import Link from "../components/Link"
 import Card from "../components/Card"
-import { getFreelancerProfile } from "../lib/profilesApi"
-import type { FreelancerProfile } from "../types/profiles"
-import FreelancerSkillsSection from "../components/pieces/FreelancerSkillsSection"
-import FreelancerReviewsSection from "../components/pieces/FreelancerReviewsSection"
-import CertificationsSection from "../components/pieces/EditProfilePage/CertificationsSection"
-import ExperiencesSection from "../components/pieces/EditProfilePage/ExperiencesSection"
-import PortfolioSection from "../components/pieces/EditProfilePage/PortfolioSection"
-import { showToast } from "../components/showToast"
+import FreelancerSkillsSection from "../features/profiles/components/FreelancerSkillsSection"
+import ReviewsList from "../features/reviews/components/ReviewsList"
+import { calculateAverageRating } from "../features/reviews/utils/reviews.utils"
+import CertificationsSection from "../features/profiles/components/CertificationsSection"
+import ExperiencesSection from "../features/profiles/components/ExperiencesSection"
+import PortfolioSection from "../features/profiles/components/PortfolioSection"
+import { useFreelancerProfile } from "../features/profiles/api/useProfiles.api"
+import { handleSafeBack } from "../utils/navigation"
+import { formatAmount } from "../utils/currency"
+import { getCountryName } from "../utils/countryHelper"
+import { useAuth } from "../context/AuthContext"
+import { useCreateConversation } from "../features/chat/api/useChat"
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -30,67 +31,43 @@ const LinkedinIcon = ({ size = 18 }: { size?: number }) => (
 export default function FreelancerProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { setLoading } = useLoading()
-  const [profile, setProfile] = useState<FreelancerProfile | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { data: session } = useAuth()
+  const createChatMut = useCreateConversation()
 
-  useEffect(() => {
-    if (!id) return
-    const fetch = async () => {
-      setLoading(true)
-      try {
-        const result = await getFreelancerProfile(id)
-        if (!result.success) {
-          showToast("error", result.error)
-          return
-        }
-        setProfile(result.data)
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Error inesperado"
-        setError(message)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetch()
-  }, [id, setLoading])
+  const { data: profile, isLoading, error } = useFreelancerProfile(id)
+
+  if (isLoading) return null
 
   if (error || !profile) {
     return (
-      <main className="min-h-dvh flex flex-col items-center justify-center gap-4 text-center">
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 text-center">
         <p className="text-zinc-400 text-lg">
-          {error ?? "Perfil no encontrado"}
+          {error instanceof Error ? error.message : "Perfil no encontrado"}
         </p>
-        <Button btnType="primary" onClick={() => navigate(-1)}>
+        <Button btnType="primary" onClick={() => handleSafeBack(navigate)}>
           <ChevronLeft size={16} className="inline mr-1" />
           Volver
         </Button>
-      </main>
+      </div>
     )
   }
 
-  const avgRating =
-    profile.reviews && profile.reviews.length > 0
-      ? (
-          profile.reviews.reduce((sum, r) => sum + parseFloat(r.rating), 0) /
-          profile.reviews.length
-        ).toFixed(1)
-      : null
+  const ratingInfo = calculateAverageRating(profile.reviews)
 
   return (
-    <main className="min-h-dvh bg-primary-bg py-10 px-4">
+    <div className="min-h-dvh bg-primary-bg py-10 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Back */}
         <Button
           btnType="primary"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => handleSafeBack(navigate)}
           className="flex items-center gap-1 text-zinc-400 hover:text-primary transition-colors text-sm cursor-pointer">
           <ChevronLeft size={16} />
           Volver
         </Button>
 
         {/* Header */}
-        <Card className="w-full">
+        <Card className="w-full relative overflow-hidden">
           <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
             {/* Avatar */}
             <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 text-2xl font-bold text-primary">
@@ -110,12 +87,12 @@ export default function FreelancerProfilePage() {
                 <h1 className="text-2xl font-bold text-zinc-100">
                   {profile.user?.name ?? "Freelancer"}
                 </h1>
-                {avgRating && (
+                {ratingInfo && (
                   <span className="flex items-center gap-1 text-sm text-amber-400 font-semibold">
-                    <Star size={14} fill="currentColor" />
-                    {avgRating}
+                    <Star size={18} fill="currentColor" />
+                    {ratingInfo.average}
                     <span className="text-zinc-500 font-normal">
-                      ({profile.reviews!.length})
+                      ({ratingInfo.count})
                     </span>
                   </span>
                 )}
@@ -130,14 +107,14 @@ export default function FreelancerProfilePage() {
               <div className="flex flex-wrap gap-4 mt-2 text-sm text-zinc-400">
                 {profile.country && (
                   <span className="flex items-center gap-1">
-                    <MapPin size={13} />
-                    {profile.country}
+                    <MapPin size={16} />
+                    {getCountryName(profile.country)}
                   </span>
                 )}
                 {profile.hourlyRate && (
                   <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                    <DollarSign size={13} />
-                    {profile.hourlyRate}/hr
+                    <DollarSign size={16} />
+                    {formatAmount(profile.hourlyRate)}/hr
                   </span>
                 )}
               </div>
@@ -173,6 +150,26 @@ export default function FreelancerProfilePage() {
                 )}
               </div>
             </div>
+
+            {/* Actions */}
+            {session && session.user.id !== profile.userId && (
+              <div className="w-full md:w-auto md:ml-auto mt-2">
+                <Button
+                  btnType="primary"
+                  disabled={createChatMut.isPending}
+                  onClick={() => {
+                    createChatMut.mutate(
+                      { receiverId: profile.userId },
+                      {
+                        onSuccess: (conversation) => navigate(`/dashboard/chat/${conversation.id}`)
+                      }
+                    )
+                  }}
+                  className="w-full md:w-auto flex justify-center items-center gap-2 font-bold whitespace-nowrap px-6">
+                  <MessageSquare size={18} /> Contactar
+                </Button>
+              </div>
+            )}
           </div>
 
           {profile.bio && (
@@ -196,15 +193,15 @@ export default function FreelancerProfilePage() {
           />
         )}
 
-        {profile.featuredProjects && profile.featuredProjects.length > 0 && (
+        {profile.portfolioItems && profile.portfolioItems.length > 0 && (
           <PortfolioSection
-            existing={profile.featuredProjects}
+            existing={profile.portfolioItems}
             editable={false}
           />
         )}
 
-        <FreelancerReviewsSection reviews={profile.reviews ?? []} />
+        <ReviewsList reviews={profile.reviews ?? []} />
       </div>
-    </main>
+    </div>
   )
 }
