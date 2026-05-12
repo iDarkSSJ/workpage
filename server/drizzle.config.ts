@@ -1,4 +1,7 @@
-import "dotenv/config"
+import { config } from "dotenv"
+config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env",
+})
 import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({

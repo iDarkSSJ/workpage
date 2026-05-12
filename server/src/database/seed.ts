@@ -1,3 +1,4 @@
+import "dotenv/config"
 import { db } from "./database"
 import { skill } from "./schema/profiles"
 import { randomUUID } from "node:crypto"
@@ -80,10 +81,10 @@ const skillSeeds = [
 async function seed() {
   console.log("🌱 Seeding skills...")
   try {
-    const dataToInsert = skillSeeds.map(s => ({
+    const dataToInsert = skillSeeds.map((s) => ({
       id: randomUUID(),
       name: s.name,
-      category: s.category
+      category: s.category,
     }))
 
     await db.insert(skill).values(dataToInsert).onConflictDoNothing()

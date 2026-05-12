@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from "express"
 import { createServer } from "http"
 import { initSocket } from "./socket"
@@ -7,6 +8,7 @@ import cors from "cors"
 import authRouter from "./router/auth"
 import apiRouter from "./router/index"
 import { errorHandler } from "./middleware/errorHandler"
+
 const app = express()
 const port = 3000
 

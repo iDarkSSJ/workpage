@@ -2,11 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db } from "../database/database"
 import * as authSchema from "../database/auth-schema"
-import {
-  sendDeleteAccVerEmail,
-  sendResetPasswordEmail,
-  sendVerificationEmail,
-} from "../email/email"
+import { sendResetPasswordEmail, sendVerificationEmail } from "../email/email"
 import { eq } from "drizzle-orm"
 
 export const auth = betterAuth({
@@ -24,8 +20,8 @@ export const auth = betterAuth({
     },
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerificationEmail({
-        verifyUrl: url,
         user,
+        verifyUrl: url,
       })
     },
   },

@@ -8,7 +8,15 @@ const resend = new Resend(process.env.RESEND_API_KEY!)
 const emailAddress = "Workpage <noreply@goash.site>"
 
 interface VerificationParams {
-  user: { name: string; email: string }
+  user: {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    emailVerified: boolean
+    name: string
+    email?: string
+    image?: string
+  }
   verifyUrl: string
 }
 

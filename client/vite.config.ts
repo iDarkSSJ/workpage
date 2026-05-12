@@ -5,5 +5,8 @@ import tailwindcss from "@tailwindcss/vite"
 // https://vite.dev/config/
 export default defineConfig({
   // base: "/sis/",
+  preview: {
+    allowedHosts: ["workapp.goash.site"],
+  },
   plugins: [react(), tailwindcss()],
 })
