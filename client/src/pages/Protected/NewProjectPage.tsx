@@ -19,7 +19,7 @@ export default function NewProjectPage() {
         "error",
         "Debes tener un perfil de contratista para publicar proyectos.",
       )
-      navigate("/profile/setup")
+      navigate("/dashboard/edit-profile")
     }
   }, [profilesLoading, isContractor, navigate])
 

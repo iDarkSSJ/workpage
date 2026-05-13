@@ -159,7 +159,7 @@ export default function ProjectDetailPage() {
                       de freelancer para poder aplicar a proyectos.
                     </p>
                     <Link
-                      path="/freelancer/setup"
+                      path="/dashboard/edit-profile"
                       btnStyle
                       btnType="secondary"
                       className="px-10 py-2.5 font-bold text-zinc-900 bg-primary">
