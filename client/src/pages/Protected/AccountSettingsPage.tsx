@@ -154,7 +154,7 @@ export default function AccountSettingsPage() {
                   <p className="text-zinc-100 font-semibold italic">
                     ¿Estás completamente seguro de iniciar el proceso?
                   </p>
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 flex-wrap">
                     <Button
                       btnType="danger"
                       disabled={deleteAccountMut.isPending}
