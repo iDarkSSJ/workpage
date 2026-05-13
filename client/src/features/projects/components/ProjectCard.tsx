@@ -18,7 +18,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           <Link path={`/projects/${project.id}`}>{project.title}</Link>
         </h3>
         <Tag variant="primary">
-          {project.budgetType === "fixed" ? "Fixed Price" : "Hourly"}
+          {project.budgetType === "fixed" ? "Fijo" : "Por hora"}
         </Tag>
       </div>
 
