@@ -82,16 +82,16 @@ export const contract = pgTable(
     proposalId: text("proposal_id")
       .notNull()
       .unique()
-      .references(() => proposal.id, { onDelete: "restrict" }),
+      .references(() => proposal.id, { onDelete: "cascade" }),
     projectId: text("project_id")
       .notNull()
-      .references(() => project.id, { onDelete: "restrict" }),
+      .references(() => project.id, { onDelete: "cascade" }),
     contractorId: text("contractor_id")
       .notNull()
-      .references(() => contractorProfile.id, { onDelete: "restrict" }),
+      .references(() => contractorProfile.id, { onDelete: "cascade" }),
     freelancerId: text("freelancer_id")
       .notNull()
-      .references(() => freelancerProfile.id, { onDelete: "restrict" }),
+      .references(() => freelancerProfile.id, { onDelete: "cascade" }),
     agreedAmount: numeric("agreed_amount", {
       precision: 10,
       scale: 2,
