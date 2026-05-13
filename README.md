@@ -105,10 +105,11 @@ Este comando levantará el frontend para que puedas acceder a la interfaz de SIG
 
 # Acceder al frontend
 
-Automaticamente el frontend se abrirá en la dirección `http://localhost:5173`.
+Automaticamente el frontend se abrirá en la dirección `http://localhost:4173`.
 Y se comunicara al backend en la dirección `http://localhost:3000`.
 (Si verificas correctamente la url del backend en el archivo `.env` del frontend, no deberas cambiar nada)
 
+Asi que para acceder a la aplicación solo ingresa: `http://localhost:4173` en el navegador.
 ---
 
 ## Stack Tecnológico
